@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>சுழற்று, விளையாடு! – Kids Play Box</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Thambi+2:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFE58A;--bg2:#FFD23F;--card:#FFFFFF;--ink:#23305E;--soft:#5B6690;--muted:#EEF0F8;
+  --good:#2BB24C;--bad:#F25C54;--shadow:#23305E;--tabbg:#FFFFFF;
+  color-scheme:light;box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#1E2547;--bg2:#151A36;--card:#2B3463;--ink:#FFF4D6;--soft:#B9C1E8;--muted:#232B55;--shadow:#0B0F24;--tabbg:#252D58;color-scheme:dark}
+}
+:root[data-theme="dark"]{--bg:#1E2547;--bg2:#151A36;--card:#2B3463;--ink:#FFF4D6;--soft:#B9C1E8;--muted:#232B55;--shadow:#0B0F24;--tabbg:#252D58;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{margin:0;min-height:100%}
+body{font-family:"Baloo Thambi 2","Nirmala UI","Latha",system-ui,sans-serif;color:var(--ink);background:var(--bg);background-image:radial-gradient(circle at 15% 0%,var(--bg) 0,var(--bg) 45%,var(--bg2) 100%);background-attachment:fixed;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+button{font-family:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:4px solid #1FB5A8;outline-offset:3px}
+.hidden{display:none!important}
+.app{max-width:640px;margin:0 auto;padding:14px 14px calc(100px + env(safe-area-inset-bottom,0px))}
+.app.nogap{padding-bottom:28px}
+.chunk{background:var(--card);border:3px solid var(--ink);border-radius:22px;box-shadow:0 5px 0 var(--shadow)}
+.btn{border:3px solid var(--ink);border-radius:18px;box-shadow:0 5px 0 var(--shadow);font-weight:800;font-size:1.2rem;padding:10px 20px;background:var(--card);transition:transform .08s}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--shadow)}
+.btn:disabled{opacity:.55}
+.wide{display:block;width:100%}
+.primary{background:#FF6B6B;color:#fff}
+h1{font-size:2.2rem;line-height:1.05;margin:4px 0;font-weight:800}
+h2{font-size:1.5rem;margin:0;line-height:1.15;font-weight:800}
+h3{font-size:1.2rem;margin:20px 0 10px;font-weight:800}
+h3 small{font-weight:600;color:var(--soft);font-size:.9rem}
+p{margin:0}
+.soft{color:var(--soft)}
+.top{display:flex;align-items:center;gap:12px;margin:2px 0 14px}
+.back{width:50px;height:50px;padding:0;border-radius:50%;font-size:1.5rem;flex:none}
+
+/* home */
+.hello{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.hello .soft{font-size:1.1rem}
+.pstrip{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 12px;margin:0 -2px}
+.pmini{flex:none;display:flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;border-radius:40px;border:3px solid var(--pc);background:var(--card);font-weight:800}
+.pmini .a{width:40px;height:40px;border-radius:50%;background:var(--pc);display:flex;align-items:center;justify-content:center;font-size:1.4rem}
+.pmini small{display:block;font-weight:600;color:var(--soft);font-size:.8rem;line-height:1}
+.ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:14px}
+.gcard{text-align:left;padding:12px;display:flex;flex-direction:column;gap:6px;background:color-mix(in srgb,var(--gc) 20%,var(--card));border-radius:24px}
+.gcard .ge{width:64px;height:64px;border-radius:20px;background:var(--gc);border:3px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:2.2rem;transform:rotate(-4deg)}
+.gcard:nth-child(even) .ge{transform:rotate(4deg)}
+.gcard b{font-size:1.2rem;line-height:1.1}
+.gcard .en{font-size:.9rem;color:var(--soft);font-weight:600;line-height:1}
+.gcard .meta{font-size:.85rem;font-weight:700;color:var(--soft)}
+.daily{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:6px}
+.daily .de{font-size:2.4rem}
+
+/* setup */
+.hero{display:flex;gap:14px;align-items:center;padding:14px;background:color-mix(in srgb,var(--gc) 22%,var(--card))}
+.hero .he{font-size:3rem;width:78px;height:78px;flex:none;border-radius:22px;background:var(--gc);border:3px solid var(--ink);display:flex;align-items:center;justify-content:center}
+.hero p{font-size:1.05rem;line-height:1.35}
+.pick{display:flex;flex-wrap:wrap;gap:10px}
+.pchip{position:relative;display:flex;align-items:center;gap:8px;padding:6px 16px 6px 6px;border-radius:40px;border:3px solid var(--ink);background:var(--card);font-weight:800;font-size:1.1rem;box-shadow:0 4px 0 var(--shadow);opacity:.6}
+.pchip .a{width:42px;height:42px;border-radius:50%;background:var(--muted);display:flex;align-items:center;justify-content:center;font-size:1.5rem}
+.pchip.on{opacity:1;background:color-mix(in srgb,var(--pc) 25%,var(--card));border-color:var(--pc)}
+.pchip.on .a{background:var(--pc)}
+.pchip .n{position:absolute;top:-10px;right:-6px;background:var(--ink);color:var(--card);border-radius:50%;width:24px;height:24px;font-size:.85rem;display:flex;align-items:center;justify-content:center}
+.optrow{margin-top:14px}
+.optrow label{font-weight:800;display:block;margin-bottom:6px}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg button{font-size:1rem;padding:6px 14px;border-radius:14px;box-shadow:0 3px 0 var(--shadow)}
+.seg button.on{background:var(--ink);color:var(--card)}
+.warn{color:var(--bad);font-weight:700;text-align:center;min-height:1.4em;margin-top:8px}
+.go{margin-top:20px;font-size:1.6rem}
+
+/* in-game strip */
+.strip{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.sp{flex:1 1 0;min-width:120px;display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:16px;border:3px solid var(--pc);background:var(--card);opacity:.6;transition:transform .2s}
+.sp.on{opacity:1;transform:scale(1.04);background:color-mix(in srgb,var(--pc) 22%,var(--card));box-shadow:0 4px 0 var(--shadow)}
+.sp span{font-size:1.5rem}
+.sp b{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sp em{font-style:normal;font-weight:800;font-size:1.3rem}
+.note{text-align:center;font-weight:800;font-size:1.25rem;margin:4px 0 12px;min-height:1.6em}
+.card{padding:22px 16px;text-align:center}
+.card .big{font-size:4.5rem;line-height:1.1}
+
+/* modal + questions */
+.ov{position:fixed;inset:0;background:rgba(20,24,50,.6);display:flex;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px calc(env(safe-area-inset-bottom,0px) + 12px);z-index:30}
+.modal{width:100%;max-width:520px;max-height:100%;overflow:auto;padding:18px 16px 20px;text-align:center;animation:pop .35s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.tag{display:inline-block;font-weight:800;padding:2px 14px;border-radius:12px;color:#23305E;font-size:1rem;border:2px solid #23305E}
+.q{font-size:1.65rem;font-weight:800;line-height:1.2;margin:10px 0 2px}
+.qt{font-size:1.1rem;color:var(--soft);margin:2px 0 10px}
+.say{font-size:1rem;padding:4px 12px;margin-bottom:8px;box-shadow:0 3px 0 var(--shadow)}
+.vis{font-size:2.4rem;line-height:1.25;margin:6px 0 14px;display:flex;flex-wrap:wrap;justify-content:center;gap:4px 8px;align-items:center}
+.vis .plus{font-size:2rem;font-weight:800;color:var(--soft)}
+.vis .grp{display:flex;flex-wrap:wrap;gap:2px;max-width:45%;justify-content:center}
+.vis .gone{opacity:.3;position:relative}
+.vis .gone::after{content:"";position:absolute;left:-2px;right:-2px;top:50%;height:4px;background:var(--bad);transform:rotate(-30deg);border-radius:2px}
+.cnt{display:grid;grid-template-columns:repeat(5,auto);gap:2px 8px}
+.bigemo{font-size:4.5rem}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:12px}
+.opt{min-height:92px;font-size:2.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px;line-height:1.1}
+.opt small{font-size:.9rem;font-weight:700}
+.opt svg{width:70px;height:70px}
+.opt.dot{border-radius:50%;aspect-ratio:1;min-height:0;max-width:104px;margin:0 auto;width:100%}
+.opt.yes{background:var(--good)!important;color:#fff;animation:boing .5s}
+.opt.no{animation:shake .4s;opacity:.35}
+@keyframes boing{50%{transform:scale(1.15)}}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.fb{font-size:1.35rem;font-weight:800;min-height:2rem;margin-top:12px}
+.big{font-size:4.5rem;margin:4px 0}
+.act{background:var(--good);color:#fff;font-size:1.4rem;margin-top:12px}
+.next{background:var(--ink);color:var(--card);margin-top:10px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+
+/* wheel */
+.wheelbox{position:relative;width:min(86vw,390px);aspect-ratio:1;margin:16px auto 16px}
+.wheel{width:100%;height:100%;border-radius:50%;border:6px solid var(--ink);box-shadow:0 8px 0 var(--shadow);transition:transform 4.2s cubic-bezier(.12,.75,.12,1)}
+.pointer{position:absolute;top:-16px;left:50%;transform:translateX(-50%);border-left:20px solid transparent;border-right:20px solid transparent;border-top:38px solid var(--ink);z-index:3}
+.hub{position:absolute;inset:38%;border-radius:50%;background:var(--card);border:5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:2.1rem;font-weight:800;z-index:2}
+.spin{display:block;width:100%;font-size:1.5rem;color:#fff}
+
+/* memory */
+.mgrid{display:grid;gap:8px;padding:8px;border-radius:20px;border:4px dashed var(--pc);max-width:520px;margin:0 auto}
+.mcard{aspect-ratio:3/4;padding:0;border:none;background:none;perspective:600px}
+.mcard .in{position:relative;width:100%;height:100%;transition:transform .35s;transform-style:preserve-3d}
+.mcard.open .in{transform:rotateY(180deg)}
+.mcard .f,.mcard .b{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:3px solid var(--ink);border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 0 var(--shadow)}
+.mcard .f{background:repeating-linear-gradient(45deg,#8E7CFF 0 10px,#7a68f0 10px 20px);font-size:1.6rem;color:#fff;font-weight:800}
+.mcard .b{background:var(--card);transform:rotateY(180deg);font-size:clamp(1.6rem,8vw,2.6rem)}
+.mcard.done .b{background:color-mix(in srgb,var(--good) 30%,var(--card))}
+.mcard.done{animation:boing .5s}
+
+/* race */
+.race{position:fixed;inset:0;z-index:25;display:flex;flex-direction:column;background:var(--bg);padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+.half{flex:1;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:12px;background:color-mix(in srgb,var(--pc) 20%,var(--bg));transition:background .2s;min-height:0}
+.half.top{transform:rotate(180deg)}
+.half.win{background:color-mix(in srgb,var(--good) 45%,var(--bg))}
+.half.frozen{filter:grayscale(1) brightness(.8)}
+.half.waiting .ropts{opacity:.35}
+.rhead{width:100%;max-width:520px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:1.2rem}
+.rhead b{font-size:1.8rem;background:var(--pc);color:#fff;border:3px solid var(--ink);border-radius:14px;padding:0 12px}
+.rprompt{text-align:center;font-size:3.4rem;line-height:1.1;min-height:4rem;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:2px 6px}
+.rprompt svg{width:70px;height:70px}
+.rprompt .cd{font-size:3rem;font-weight:800}
+.ropts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:520px;width:100%;margin:0 auto}
+.ropts .opt{min-height:74px;font-size:2.2rem}
+.ropts .opt svg{width:52px;height:52px}
+.ropts .opt.dot{max-width:78px}
+.rmid{display:flex;align-items:center;justify-content:center;gap:14px;padding:6px;background:var(--ink);color:var(--card);font-weight:800}
+.rmid .btn{padding:2px 12px;font-size:1rem;box-shadow:none;border-width:2px;color:var(--ink)}
+
+/* snakes */
+.sboard{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:6px;border:4px solid var(--ink);border-radius:18px;background:var(--ink);max-width:520px;margin:0 auto}
+.cell{position:relative;aspect-ratio:1;border-radius:10px;background:#FFF7D1;color:#23305E;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:center;padding:2px;overflow:hidden}
+.cell.b{background:#C9F2E6}
+.cell.lad{background:#B9E6A0}
+.cell.snk{background:#FFC2BD}
+.cell.star{background:#FFE14D}
+.cell.end{background:#D9CFFF}
+.cell i{position:absolute;top:1px;left:4px;font-style:normal;font-weight:800;font-size:.8rem;opacity:.75}
+.cell em{position:absolute;top:30%;left:0;right:0;text-align:center;font-style:normal;font-size:clamp(.8rem,3.4vw,1.15rem);font-weight:800;line-height:1}
+.tok{width:clamp(20px,6vw,30px);height:clamp(20px,6vw,30px);border-radius:50%;border:2px solid #23305E;display:inline-flex;align-items:center;justify-content:center;font-size:clamp(.8rem,3.6vw,1.15rem);margin:-2px;z-index:2;animation:boing .3s}
+.dicebar{display:flex;align-items:center;gap:14px;margin-top:14px}
+.die{width:74px;height:74px;flex:none;background:#fff;border:4px solid #23305E;border-radius:16px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:8px;box-shadow:0 5px 0 var(--shadow)}
+.die i{border-radius:50%;margin:3px}
+.die i.on{background:#23305E}
+.die.roll{animation:shake .15s infinite}
+.roll{flex:1;color:#fff;font-size:1.35rem}
+
+/* tic tac toe */
+.ttt{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:360px;margin:0 auto}
+.tc{aspect-ratio:1;font-size:clamp(2.4rem,14vw,3.8rem);border:3px solid var(--ink);border-radius:20px;background:var(--card);box-shadow:0 5px 0 var(--shadow);padding:0}
+.tc.w{background:var(--good)!important;animation:boing .6s}
+
+/* balloon */
+.bhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:800;font-size:1.3rem;margin-bottom:8px}
+.bhead .t{display:flex;align-items:center;gap:6px}
+.barea{position:relative;height:min(62vh,520px);border:4px solid var(--ink);border-radius:22px;overflow:hidden;background:linear-gradient(#9EE3FF,#E0F7FF);touch-action:manipulation}
+.balloon{position:absolute;bottom:0;width:66px;height:82px;border:none;padding:0;border-radius:50% 50% 48% 52%/58% 58% 42% 42%;box-shadow:inset -8px -8px 0 rgba(0,0,0,.15),inset 6px 6px 0 rgba(255,255,255,.35);color:#fff;font-size:1.9rem;font-weight:800;text-shadow:0 2px 0 rgba(0,0,0,.35);animation:rise linear forwards}
+.balloon::after{content:"";position:absolute;left:50%;top:100%;width:2px;height:30px;background:rgba(35,48,94,.5)}
+.balloon.pop{animation:popb .25s forwards!important}
+.balloon.wrong{filter:grayscale(.8)}
+@keyframes rise{from{transform:translateY(0)}to{transform:translateY(var(--h))}}
+@keyframes popb{to{transform:scale(1.8);opacity:0}}
+.swatch{display:inline-block;width:28px;height:34px;border-radius:50% 50% 48% 52%/58% 58% 42% 42%;border:2px solid #23305E;vertical-align:middle}
+
+/* simon */
+.simon{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:12px;width:min(86vw,380px);margin:0 auto}
+.pad{aspect-ratio:1;border:4px solid var(--ink);background:var(--c);font-size:3rem;filter:brightness(.6) saturate(.8);transition:filter .1s,transform .1s;padding:0}
+.pad:nth-child(1){border-radius:100% 14px 14px 14px}
+.pad:nth-child(2){border-radius:14px 100% 14px 14px}
+.pad:nth-child(3){border-radius:14px 14px 14px 100%}
+.pad:nth-child(4){border-radius:14px 14px 100% 14px}
+.pad.lit{filter:brightness(1.15) saturate(1.2);transform:scale(1.05)}
+.scenter{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:86px;height:86px;border-radius:50%;background:var(--card);border:4px solid var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:1.8rem;line-height:1;pointer-events:none}
+.scenter small{font-size:.75rem}
+
+/* draw */
+.dtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
+.dtop b{font-size:1.6rem}
+.paper{display:block;width:100%;background:#fff;border:4px solid var(--ink);border-radius:18px;touch-action:none}
+.dtools{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0;align-items:center;justify-content:center}
+.cbtn{width:40px;height:40px;border-radius:50%;border:3px solid var(--ink);padding:0}
+.cbtn.on{transform:scale(1.2);box-shadow:0 0 0 3px var(--card),0 0 0 6px var(--ink)}
+.tbtn{font-size:1.2rem;padding:4px 10px;box-shadow:0 3px 0 var(--shadow)}
+.tbtn.on{background:var(--ink);color:var(--card)}
+
+/* results */
+.rank{display:flex;flex-direction:column;gap:10px;margin:14px 0}
+.rrow{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:18px;border:3px solid var(--pc);background:color-mix(in srgb,var(--pc) 15%,var(--card));font-weight:800}
+.rrow .m{font-size:1.8rem;width:36px;text-align:center}
+.rrow .a{font-size:1.8rem}
+.rrow .nm{flex:1;font-size:1.2rem}
+.rrow .s{font-size:1.2rem}
+.rrow .st{font-size:.95rem;color:var(--soft)}
+.newb{padding:12px;margin-top:6px;background:color-mix(in srgb,#FFD23F 35%,var(--card))}
+
+/* progress */
+.lb{padding:8px 12px}
+.lbrow{display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:2px dashed var(--muted);font-weight:800}
+.lbrow:last-child{border-bottom:none}
+.lbrow .m{width:30px;font-size:1.4rem;text-align:center}
+.lbrow .a{width:40px;height:40px;border-radius:50%;background:var(--pc);display:flex;align-items:center;justify-content:center;font-size:1.4rem;border:2px solid var(--ink)}
+.lbrow .nm{flex:1}
+.ptabs{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px}
+.ptabs .pchip{flex:none}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tile{padding:10px 4px;text-align:center}
+.tile b{display:block;font-size:1.6rem;line-height:1.1}
+.tile small{font-size:.8rem;color:var(--soft);font-weight:700}
+@media (max-width:420px){.tiles{grid-template-columns:repeat(2,1fr)}}
+.skills{padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.sk{display:grid;grid-template-columns:32px 1fr auto;align-items:center;gap:8px;font-weight:700}
+.sk .e{font-size:1.3rem;text-align:center;font-weight:800}
+.sk .l small{color:var(--soft);font-weight:600}
+.sk .bar{grid-column:2/4;height:14px;border-radius:8px;background:var(--muted);border:2px solid var(--ink);overflow:hidden;margin-top:-4px}
+.sk .bar i{display:block;height:100%}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px}
+.badge{padding:10px 6px;text-align:center;font-weight:700;font-size:.85rem;line-height:1.2}
+.badge .e{font-size:2.2rem;display:block}
+.badge.off{opacity:.35;filter:grayscale(1)}
+.hist{padding:4px 12px}
+.hrow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:2px dashed var(--muted)}
+.hrow:last-child{border-bottom:none}
+.hrow .e{font-size:1.6rem}
+.hrow .d{flex:1;min-width:0}
+.hrow .d b{display:block}
+.hrow .d small{color:var(--soft);font-weight:600}
+.empty{padding:20px;text-align:center;color:var(--soft);font-weight:700}
+
+/* players */
+.plist{display:flex;flex-direction:column;gap:12px}
+.prow{display:flex;align-items:center;gap:12px;padding:10px 12px;border-color:var(--pc)}
+.prow .a{width:56px;height:56px;border-radius:50%;background:var(--pc);display:flex;align-items:center;justify-content:center;font-size:2rem;border:3px solid var(--ink);flex:none}
+.prow .d{flex:1;min-width:0}
+.prow .d b{font-size:1.3rem;display:block}
+.prow .d small{color:var(--soft);font-weight:700}
+.prow .btn{padding:6px 12px;font-size:1.2rem;box-shadow:0 3px 0 var(--shadow)}
+.field{width:100%;font:inherit;font-size:1.3rem;font-weight:700;padding:8px 12px;border:3px solid var(--ink);border-radius:14px;background:var(--muted);color:var(--ink);user-select:text;-webkit-user-select:text}
+.avgrid{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:12px 0}
+.avb{width:48px;height:48px;font-size:1.7rem;border-radius:50%;border:3px solid transparent;background:var(--muted);padding:0}
+.avb.on{border-color:var(--ink);transform:scale(1.12)}
+.colgrid{display:flex;gap:10px;justify-content:center;margin-bottom:6px}
+
+/* settings */
+.set{padding:14px;display:flex;flex-direction:column;gap:16px}
+.set .optrow{margin:0}
+.danger{background:var(--bad);color:#fff}
+
+/* tabs */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;justify-content:center;gap:4px;background:var(--tabbg);border-top:3px solid var(--ink);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
+.tabs button{flex:1;max-width:150px;border:none;background:none;border-radius:16px;padding:4px 2px;font-weight:700;font-size:.82rem;display:flex;flex-direction:column;align-items:center;line-height:1.2}
+.tabs button span{font-size:1.5rem}
+.tabs button b{font-weight:700}
+.langb{padding:6px 14px;font-size:1rem;margin-left:auto;flex:none;align-self:flex-start;box-shadow:0 3px 0 var(--shadow)}
+.tabs button.on{background:var(--ink);color:var(--card)}
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--card);padding:8px 18px;border-radius:16px;font-weight:800;opacity:0;transition:.25s;z-index:50;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:60}
+@media (prefers-reduced-motion:reduce){.wheel{transition-duration:1s}.modal,.mcard.done,.tok{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+<main class="app" id="app"></main>
+<nav class="tabs" id="tabs">
+  <button data-t="home"><span>🎮</span><b></b></button>
+  <button data-t="progress"><span>📊</span><b></b></button>
+  <button data-t="players"><span>👨‍👩‍👦</span><b></b></button>
+  <button data-t="prefs"><span>⚙️</span><b></b></button>
+</nav>
+<div class="ov hidden" id="ov"><div class="modal chunk" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= helpers ================= */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const rnd=n=>Math.floor(Math.random()*n), pick=a=>a[rnd(a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const dkey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const app=$('#app');
+const L=(ta,en)=>S.settings.lang==='en'?en:ta;
+const tr=x=>Array.isArray(x)?L(x[0],x[1]):x;
+const gn=g=>L(g.ta,g.en), gsub=g=>L(g.en,g.ta);
+
+/* ================= state ================= */
+const PCOLORS=['#FF6B6B','#1FB5A8','#8E7CFF','#FFB238','#4D9DE0','#F28AC0'];
+const AVATARS=['🦁','🐯','🐼','🐵','🦄','🐸','🚀','🦖','🐶','🐱','🦋','🐧','🐻','🦊','👑','⚽','🌻','🐬'];
+function defaultState(){return{v:2,players:[
+  {id:'p1',name:'நிலநாதவ்',av:'🦁',color:PCOLORS[0]},
+  {id:'p2',name:'அப்பா',av:'🐼',color:PCOLORS[1]},
+  {id:'p3',name:'அம்மா',av:'🦋',color:PCOLORS[2]}],
+  stats:{},history:[],settings:{sound:true,voice:true,diff:'easy',theme:'auto',lastSel:{},lastOpts:{},lang:'ta'},updatedAt:0}}
+function normalize(r){const d=defaultState();r.settings=Object.assign(d.settings,r.settings||{});r.stats=r.stats||{};r.history=r.history||[];if(!Array.isArray(r.players)||r.players.length<2)r.players=d.players;return r}
+function load(){
+  try{const r=JSON.parse(localStorage.getItem('spinplay_v2'));if(r&&r.players)return normalize(r)}catch(e){}
+  const d=defaultState();
+  try{const o=JSON.parse(localStorage.getItem('sp_setup'));if(o&&o.n){d.players[0].name=o.n[0];d.players[0].av=o.a[0];d.players[1].name=o.n[1];d.players[1].av=o.a[1]}}catch(e){}
+  return d;
+}
+let S=load();
+function st(pid){return S.stats[pid]||(S.stats[pid]={stars:0,wins:0,plays:0,games:{},skills:{},days:[]})}
+let dbDoc=null,dbTimer=null;
+function save(){
+  S.updatedAt=Date.now();
+  try{localStorage.setItem('spinplay_v2',JSON.stringify(S))}catch(e){}
+  if(dbDoc){clearTimeout(dbTimer);dbTimer=setTimeout(()=>{dbDoc.set({json:JSON.stringify(S),updatedAt:S.updatedAt}).catch(()=>{})},800)}
+}
+function applyTheme(){const r=document.documentElement;r.lang=S.settings.lang==='en'?'en':'ta';if(S.settings.theme==='auto')r.removeAttribute('data-theme');else r.setAttribute('data-theme',S.settings.theme)}
+applyTheme();
+
+/* optional account sync: progress follows the person across devices */
+(async()=>{
+  try{
+    for(let i=0;i<30&&!(window.claude&&window.claude.use);i++)await new Promise(r=>setTimeout(r,200));
+    if(!(window.claude&&window.claude.use))return;
+    const [db,user]=await Promise.all([claude.use('db'),claude.use('user')]);
+    if(!db||!user)return;
+    const id=await user.id();if(!id)return;
+    dbDoc=db.doc('data/users/'+id+'/state');
+    const snap=await dbDoc.get();
+    const d=snap.exists&&snap.data();
+    if(d&&d.json&&(d.updatedAt||0)>(S.updatedAt||0)){
+      S=normalize(JSON.parse(d.json));try{localStorage.setItem('spinplay_v2',JSON.stringify(S))}catch(e){}
+      applyTheme();if(currentTab)go(currentTab);
+    }else if(S.updatedAt){save()}
+  }catch(e){}
+})();
+
+/* ================= sound & voice ================= */
+let actx=null;
+function tone(f,d=.12,type='sine',v=.15,delay=0){
+  if(!S.settings.sound)return;
+  try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume();
+    const o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime+delay;
+    o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);
+    o.connect(g).connect(actx.destination);o.start(t);o.stop(t+d+.02)}catch(e){}
+}
+const sfx={
+  tap:()=>tone(660,.06,'triangle',.1),
+  tick:()=>tone(900,.04,'square',.05),
+  yes:()=>[523,659,784,1046].forEach((f,i)=>tone(f,.18,'triangle',.18,i*.09)),
+  no:()=>{tone(220,.25,'sawtooth',.07);tone(180,.3,'sawtooth',.07,.12)},
+  win:()=>[523,523,784,659,784,1046].forEach((f,i)=>tone(f,.25,'triangle',.2,i*.15)),
+  pop:()=>{tone(880,.05,'square',.08);tone(1320,.08,'triangle',.08,.04)},
+  step:i=>tone(392+i*30,.09,'triangle',.14)
+};
+let voices=[];
+function loadVoices(){try{voices=speechSynthesis.getVoices()}catch(e){}}
+if('speechSynthesis' in window){loadVoices();speechSynthesis.onvoiceschanged=loadVoices}
+function speak(t,lang){
+  if(!S.settings.voice||!t||!('speechSynthesis' in window))return;
+  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);
+    if(lang==='ta'){const v=voices.find(v=>/^ta/i.test(v.lang));if(!v)return;u.voice=v;u.lang=v.lang}
+    else{u.lang='en-IN';const v=voices.find(v=>v.lang==='en-IN')||voices.find(v=>/^en/i.test(v.lang));if(v)u.voice=v}
+    u.rate=.85;u.pitch=1.15;speechSynthesis.speak(u)}catch(e){}
+}
+
+/* ================= confetti / toast / modal ================= */
+const cc=$('#confetti'),cx=cc.getContext('2d');let parts=[],raf=null;
+function csize(){cc.width=innerWidth;cc.height=innerHeight}addEventListener('resize',csize);csize();
+function burst(n){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const cols=['#FF6B6B','#FFD23F','#1FB5A8','#8E7CFF','#4D9DE0','#F28AC0'];
+  for(let i=0;i<n;i++)parts.push({x:innerWidth/2,y:innerHeight/2.5,vx:(Math.random()-.5)*14,vy:-Math.random()*14-4,s:6+Math.random()*7,c:pick(cols),r:Math.random()*6,life:120});
+  if(!raf)cloop();
+}
+function cloop(){cx.clearRect(0,0,cc.width,cc.height);parts=parts.filter(p=>p.life-->0);
+  parts.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.r+=.2;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);cx.restore()});
+  raf=parts.length?requestAnimationFrame(cloop):null;if(!raf)cx.clearRect(0,0,cc.width,cc.height)}
+let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1800)}
+function openModal(html){$('#modal').innerHTML=html;$('#ov').classList.remove('hidden')}
+function closeModal(){$('#ov').classList.add('hidden');$('#modal').innerHTML=''}
+function askConfirm(title,msg,yes,onYes){
+  openModal(`<div class="big">🤔</div><div class="q">${title}</div><p class="qt">${msg}</p><div class="row2"><button class="btn" id="cNo">${L('வேண்டாம்','Cancel')}</button><button class="btn danger" id="cYes">${yes}</button></div>`);
+  $('#cNo').onclick=closeModal;$('#cYes').onclick=()=>{closeModal();onYes()};
+}
+
+/* ================= content bank ================= */
+const SKILL={color:['🎨',['நிறங்கள்','Colours']],count:['🔢',['எண்ணுதல்','Counting']],abc:['🔤',['ஆங்கில எழுத்து','English letters']],tamil:['அ',['தமிழ் எழுத்து','Tamil letters']],shape:['🔺',['வடிவங்கள்','Shapes']],animal:['🐮',['விலங்கு சத்தம்','Animal sounds']],math:['➕',['கணக்கு','Maths']],pattern:['🧩',['வரிசை','Patterns']],oddone:['🔍',['பொருந்தாதது','Odd one out']],opposite:['↔️',['எதிர்ச்சொல்','Opposites']],memory:['🧠',['நினைவாற்றல்','Memory']],speed:['⚡',['வேகம்','Speed']],logic:['♟️',['யோசனை','Thinking']],creative:['🖍️',['கற்பனை','Creativity']]};
+const COLORS=[{en:'Red',ta:'சிவப்பு',c:'#E53935'},{en:'Blue',ta:'நீலம்',c:'#1E63D6'},{en:'Green',ta:'பச்சை',c:'#2BB24C'},{en:'Yellow',ta:'மஞ்சள்',c:'#FFD600'},{en:'Orange',ta:'ஆரஞ்சு',c:'#FF8A00'},{en:'Purple',ta:'ஊதா',c:'#8E24AA'},{en:'Pink',ta:'இளஞ்சிவப்பு',c:'#FF5FA2'},{en:'Brown',ta:'பழுப்பு',c:'#8D5A2B'},{en:'Black',ta:'கருப்பு',c:'#111111'},{en:'White',ta:'வெள்ளை',c:'#FFFFFF'}];
+const VIVID=COLORS.slice(0,7);
+const COLOR_OBJ=[['🍎',0],['🍓',0],['🌊',1],['🐳',1],['🐸',2],['🥦',2],['🍌',3],['🌻',3],['🥕',4],['🍊',4],['🍇',5],['🐷',6],['🍫',7]];
+const WORDS=[['A','🍎','Apple'],['B','⚽','Ball'],['C','🐱','Cat'],['D','🐶','Dog'],['E','🥚','Egg'],['F','🐟','Fish'],['G','🍇','Grapes'],['H','🎩','Hat'],['I','🍦','Ice cream'],['J','🧃','Juice'],['K','🪁','Kite'],['L','🦁','Lion'],['M','🌙','Moon'],['N','👃','Nose'],['O','🍊','Orange'],['P','🐷','Pig'],['Q','👸','Queen'],['R','🐰','Rabbit'],['S','☀️','Sun'],['T','🐯','Tiger'],['U','☂️','Umbrella'],['V','🚐','Van'],['W','⌚','Watch'],['Y','🪀','Yo-yo'],['Z','🦓','Zebra']];
+const TAMIL=[['அ','🐿️','அணில்'],['ஆ','🐐','ஆடு'],['இ','🍃','இலை'],['ஈ','🪰','ஈ'],['உ','🧂','உப்பு'],['எ','🐭','எலி'],['ஏ','🪜','ஏணி'],['ஒ','🐪','ஒட்டகம்'],['ஓ','🐺','ஓநாய்'],['க','🚢','கப்பல்'],['ப','⚽','பந்து'],['ம','🦚','மயில்'],['ய','🐘','யானை'],['த','🍅','தக்காளி'],['ந','🦀','நண்டு'],['ச','🌙','சந்திரன்'],['வ','🚗','வண்டி']];
+const SHAPES={circle:{en:'Circle',ta:'வட்டம்',s:'<circle cx="50" cy="50" r="42"/>'},square:{en:'Square',ta:'சதுரம்',s:'<rect x="10" y="10" width="80" height="80" rx="4"/>'},triangle:{en:'Triangle',ta:'முக்கோணம்',s:'<polygon points="50,8 94,90 6,90"/>'},star:{en:'Star',ta:'நட்சத்திரம்',s:'<polygon points="50,5 61,38 96,38 68,59 79,93 50,72 21,93 32,59 4,38 39,38"/>'},heart:{en:'Heart',ta:'இதயம்',s:'<path d="M50 88 C10 60 4 34 22 20 C36 10 48 18 50 30 C52 18 64 10 78 20 C96 34 90 60 50 88Z"/>'},rectangle:{en:'Rectangle',ta:'செவ்வகம்',s:'<rect x="4" y="25" width="92" height="50" rx="4"/>'},diamond:{en:'Diamond',ta:'சாய்சதுரம்',s:'<polygon points="50,4 92,50 50,96 8,50"/>'},oval:{en:'Oval',ta:'நீள்வட்டம்',s:'<ellipse cx="50" cy="50" rx="46" ry="30"/>'}};
+const SFILL=['#FF6B6B','#1FB5A8','#FFB238','#8E7CFF','#4D9DE0','#F28AC0','#7BD389'];
+const shapeSvg=(k,fill)=>`<svg viewBox="0 0 100 100" fill="${fill}" stroke="#23305E" stroke-width="5">${SHAPES[k].s}</svg>`;
+const ANIMALS=[['🐄','Moo','மா மா'],['🐕','Woof woof','லொள் லொள்'],['🐈','Meow','மியாவ்'],['🦆','Quack quack','குவாக் குவாக்'],['🐑','Baa','பா பா'],['🦁','Roar','கர்ர்ர்'],['🐓','Cock-a-doodle-doo','கொக்கரக்கோ'],['🐍','Hiss','ஸ்ஸ்ஸ்'],['🐝','Buzz','ங்ங்ங்'],['🐸','Ribbit','கொர் கொர்'],['🐘','Pawoo','பிளிறல்'],['🦉','Hoot hoot','ஊ ஊ']];
+const OBJ=['🍎','🍌','⭐','🐟','🚗','🎈','🐥','🍓','🌸','⚽','🦋','🍩'];
+const ODD=[['🍎','🍌','🍇','🍓','🍊','🍉'],['🐶','🐱','🐮','🐷','🐰','🐵'],['🚗','🚌','🚲','🚂','✈️','🚢'],['🌹','🌻','🌷','🌼','🌸'],['⚽','🏀','🎾','🏐','🏈'],['🥕','🥦','🌽','🍆','🥔'],['👕','👖','👗','🧦','🧢']];
+const OPP=[['🐘','Big','பெரியது','🐭','Small','சிறியது'],['🔥','Hot','சூடு','🧊','Cold','குளிர்'],['☀️','Day','பகல்','🌙','Night','இரவு'],['😀','Happy','மகிழ்ச்சி','😢','Sad','சோகம்'],['⬆️','Up','மேலே','⬇️','Down','கீழே'],['🐇','Fast','வேகம்','🐢','Slow','மெதுவு'],['🦒','Tall','உயரம்','🐧','Short','குட்டை'],['🔊','Loud','சத்தம்','🤫','Quiet','அமைதி']];
+const ACTIONS=[['🦘','Jump 5 times!','5 முறை குதியுங்கள்!'],['🦁','Roar like a lion!','சிங்கம் போல கர்ஜியுங்கள்!'],['🤪','Make a funny face!','வேடிக்கையான முகம் காட்டுங்கள்!'],['👃','Touch your nose, then your toes!','மூக்கைத் தொடு, பிறகு கால் விரல்!'],['🤗','Give a big hug!','பெரிய கட்டிப்பிடி!'],['🐒','Dance like a monkey!','குரங்கு போல ஆடுங்கள்!'],['👏','Clap 10 times!','10 முறை கை தட்டுங்கள்!'],['🦩','Stand on one leg and count to 5!','ஒற்றைக் காலில் நின்று 5 வரை எண்ணு!'],['🎤','Sing a rhyme together!','சேர்ந்து ஒரு பாட்டு பாடுங்கள்!'],['🐸','Hop like a frog!','தவளை போல தாவுங்கள்!'],['✋','Give a high five!','ஹை ஃபைவ் கொடுங்கள்!'],['🔄','Spin around 3 times!','3 முறை சுற்றுங்கள்!'],['🐘','Walk like an elephant!','யானை போல நடங்கள்!'],['😂','Tickle time!','கிச்சுகிச்சு நேரம்!']];
+const BONUS=[['🎁','Surprise gift!','பரிசு பெட்டி!',2],['🌈','Rainbow luck!','வானவில் அதிர்ஷ்டம்!',1],['🍭','Sweet treat!','இனிப்பு பரிசு!',2],['🚀','Rocket boost!','ராக்கெட் வேகம்!',3]];
+function numOpts(n,k,min,max){const s=new Set([n]);let g=0;while(s.size<k&&g++<200){const v=n+pick([-3,-2,-1,1,2,3]);if(v>=min&&v<=max)s.add(v)}while(s.size<k)s.add(min+rnd(max-min+1));return shuffle([...s])}
+
+function genQ(cat){
+  const med=S.settings.diff==='med';
+  if(cat==='color'){const o=shuffle(COLORS).slice(0,4),a=pick(o);return{cat,q:'Tap '+a.en.toUpperCase()+'!',qt:L(a.ta+' எது?','Find the colour '+a.en.toLowerCase()),say:'Tap the '+a.en+' one!',opts:o.map(x=>({ok:x===a,cls:'dot',style:'background:'+x.c}))}}
+  if(cat==='count'){const mx=med?15:10,n=1+rnd(mx),e=pick(OBJ);return{cat,q:'How many?',qt:L('எத்தனை '+e+' இருக்கு?','Count the '+e),say:'How many? Count them!',vis:'<div class="cnt">'+Array(n).fill('<span>'+e+'</span>').join('')+'</div>',opts:numOpts(n,3,1,mx).map(v=>({html:v,ok:v===n}))}}
+  if(cat==='abc'){const w=pick(WORDS),o=shuffle(WORDS.filter(x=>x[0]!==w[0])).slice(0,2);return{cat,q:'_'+w[2].slice(1),qt:L('முதல் எழுத்து எது?','Which letter does it start with?'),say:w[2]+'. '+w[2]+' starts with which letter?',vis:'<span class="bigemo">'+w[1]+'</span>',opts:shuffle([w,...o]).map(x=>({html:med?x[0].toLowerCase():x[0],ok:x===w}))}}
+  if(cat==='tamil'){const w=pick(TAMIL),o=shuffle(TAMIL.filter(x=>x[0]!==w[0])).slice(0,2);return{cat,lang:'ta',q:'_'+w[2].slice(w[0].length),qt:L('இது என்ன? முதல் எழுத்து எது?','Tamil: which letter does it start with?'),say:w[2],vis:'<span class="bigemo">'+w[1]+'</span>',opts:shuffle([w,...o]).map(x=>({html:x[0],ok:x===w}))}}
+  if(cat==='shape'){const ks=shuffle(Object.keys(SHAPES)).slice(0,4),a=pick(ks),c=shuffle(SFILL);return{cat,q:'Find the '+SHAPES[a].en+'!',qt:L(SHAPES[a].ta+' எது?','Which one is the '+SHAPES[a].en.toLowerCase()+'?'),say:'Find the '+SHAPES[a].en+'!',opts:ks.map((k,i)=>({html:shapeSvg(k,c[i]),ok:k===a}))}}
+  if(cat==='animal'){const o=shuffle(ANIMALS).slice(0,3),a=pick(o);return{cat,q:'Who says “'+a[1]+'”?',qt:L('“'+a[2]+'” என்று யார் சொல்வார்?','Which animal says this?'),say:'Who says, '+a[1]+'?',opts:o.map(x=>({html:x[0],ok:x===a}))}}
+  if(cat==='math'){const e=pick(OBJ);
+    if(med&&Math.random()<.5){const a=3+rnd(7),b=1+rnd(a-1),r=a-b;return{cat,q:a+' − '+b+' = ?',qt:L('எத்தனை மிச்சம்?','How many are left?'),say:a+' minus '+b+'. How many are left?',vis:'<div class="grp" style="max-width:90%">'+Array(a).fill(0).map((_,i)=>'<span class="'+(i>=r?'gone':'')+'">'+e+'</span>').join('')+'</div>',opts:numOpts(r,3,0,10).map(v=>({html:v,ok:v===r}))}}
+    const a=1+rnd(med?9:5),b=1+rnd(med?6:5),s=a+b;return{cat,q:a+' + '+b+' = ?',qt:L('மொத்தம் எத்தனை?','How many altogether?'),say:a+' plus '+b+'. How many altogether?',vis:'<div class="grp">'+Array(a).fill(e).join('')+'</div><span class="plus">+</span><div class="grp">'+Array(b).fill(e).join('')+'</div>',opts:numOpts(s,3,1,20).map(v=>({html:v,ok:v===s}))}}
+  if(cat==='pattern'){const it=shuffle(['🔴','🔵','🟡','🟢','🍎','🍌','🐱','🐶','⭐','🌙']);const types=med?[[0,1],[0,0,1],[0,1,2],[0,0,1,1],[0,1,1]]:[[0,1],[0,0,1],[0,1,1]];const t=pick(types),LEN=Math.max(5,t.length*2);const seq=[];for(let i=0;i<=LEN;i++)seq.push(it[t[i%t.length]]);const ans=seq.pop();const cand=shuffle([...new Set([...t.map(i=>it[i]),it[6],it[7]])].filter(x=>x!==ans)).slice(0,2);return{cat,q:'What comes next?',qt:L('அடுத்து என்ன வரும்?','Look at the pattern carefully'),say:'Look at the pattern. What comes next?',vis:seq.join(' ')+' <b>❓</b>',opts:shuffle([ans,...cand]).map(x=>({html:x,ok:x===ans}))}}
+  if(cat==='oddone'){const [A,B]=shuffle(ODD),odd=pick(B),three=shuffle(A).slice(0,3);return{cat,q:'Which one is different?',qt:L('எது பொருந்தாது?','Which one does not belong?'),say:'Which one does not belong?',opts:shuffle([...three,odd]).map(x=>({html:x,ok:x===odd}))}}
+  if(cat==='opposite'){const p=pick(OPP),f=Math.random()<.5,sh=f?p.slice(0,3):p.slice(3),an=f?p.slice(3):p.slice(0,3);const w=shuffle(OPP.filter(x=>x!==p)).slice(0,2).map(x=>Math.random()<.5?x.slice(0,3):x.slice(3));return{cat,q:'Opposite of '+sh[1].toUpperCase()+'?',qt:L(sh[2]+' – இதற்கு எதிர் எது?',sh[1]+' – what is the opposite?'),say:'What is the opposite of '+sh[1]+'?',vis:'<span class="bigemo">'+sh[0]+'</span>',opts:shuffle([an,...w]).map(x=>({html:x[0]+'<small>'+x[1]+'</small>',ok:x===an}))}}
+}
+function askQ(q,{who,tag,onResult,onNext}){
+  let tries=0;
+  openModal(`${tag||''}<div class="q">${q.q}</div><p class="qt">${q.qt}</p><button class="btn say" id="sayBtn">🔊 ${L('கேள்','Listen')}</button>${q.vis?`<div class="vis">${q.vis}</div>`:''}<div class="opts">${q.opts.map((o,i)=>`<button class="btn opt ${o.cls||''}" data-i="${i}" style="${o.style||''}" aria-label="option ${i+1}">${o.html??''}</button>`).join('')}</div><div class="fb" id="fb">${who?who.av+' '+esc(who.name)+L(', சரியானதைத் தொடு!',', tap the right one!'):''}</div><div id="after"></div>`);
+  speak(q.say,q.lang);$('#sayBtn').onclick=()=>speak(q.say,q.lang);
+  const nextBtn=()=>{$('#after').innerHTML='<button class="btn next" id="nx">'+L('அடுத்து','Next')+' ▶</button>';$('#nx').onclick=()=>{closeModal();onNext&&onNext()}};
+  $$('#modal .opt').forEach(b=>b.onclick=()=>{
+    if(b.disabled)return;const o=q.opts[+b.dataset.i];
+    if(o.ok){const first=tries===0;b.classList.add('yes');$$('#modal .opt').forEach(x=>x.disabled=true);
+      $('#fb').innerHTML='<span style="color:var(--good)">'+L('சூப்பர்!','Super!')+' 🎉 +'+(first?2:1)+' ⭐</span>';sfx.yes();burst(60);speak(pick(['Super!','Well done!','Awesome!','You got it!','Great job!']));onResult(true,first);nextBtn()}
+    else{tries++;b.classList.add('no');b.disabled=true;sfx.no();
+      if(tries>=2){$$('#modal .opt').forEach((x,i)=>{x.disabled=true;if(q.opts[i].ok)x.classList.add('yes')});$('#fb').textContent=L('பரவாயில்லை! 💪 இதுதான் சரி.',"That's okay! 💪 This is the right one.");speak("That's okay! Next time!");onResult(false,false);nextBtn()}
+      else{$('#fb').textContent=L('அச்சச்சோ! இன்னொரு முறை முயற்சி செய் 🙂','Oops! Try once more 🙂');speak('Oops! Try again!')}}
+  });
+}
+
+/* ================= games ================= */
+const SL=[['color','🎨',['நிறம்','Colour']],['count','🔢',['எண்ணு','Count']],['abc','🔤','ABC'],['tamil','அ',['தமிழ்','Tamil']],['shape','🔺',['வடிவம்','Shape']],['animal','🐮',['சத்தம்','Sound']],['math','➕',['கணக்கு','Maths']],['pattern','🧩',['வரிசை','Pattern']],['oddone','🔍',['வேறு?','Odd?']],['opposite','↔️',['எதிர்','Opposite']],['action','💃',['ஆடு!','Move!']],['bonus','🎁',['பரிசு','Gift']]];
+const SLC=['#FF6B6B','#FFB238','#FFE14D','#7BD389','#1FB5A8','#5FD4E8','#4D9DE0','#8E7CFF','#F28AC0','#FF8C42','#B5E655','#FF9EC4'];
+function drawWheel(cv){const x=cv.getContext('2d'),R=400,r=392,seg=Math.PI*2/SL.length;x.clearRect(0,0,800,800);
+  SL.forEach((s,i)=>{const a0=-Math.PI/2+i*seg;x.beginPath();x.moveTo(R,R);x.arc(R,R,r,a0,a0+seg);x.closePath();x.fillStyle=SLC[i];x.fill();x.lineWidth=7;x.strokeStyle='#23305E';x.stroke();
+    x.save();x.translate(R,R);x.rotate(a0+seg/2);x.textAlign='center';x.textBaseline='middle';x.fillStyle='#23305E';
+    x.font='800 66px "Baloo Thambi 2","Apple Color Emoji","Segoe UI Emoji",sans-serif';x.save();x.translate(318,0);x.rotate(Math.PI/2);x.fillText(s[1],0,0);x.restore();
+    const lb=tr(s[2]);let fs=31;do{x.font='800 '+fs+'px "Baloo Thambi 2","Nirmala UI",sans-serif'}while(x.measureText(lb).width>112&&--fs>16);x.save();x.translate(222,0);x.rotate(Math.PI/2);x.fillText(lb,0,0);x.restore();x.restore()})}
+
+const GAMES=[
+{id:'spin',e:'🎡',ta:'சுழற்று விளையாடு',en:'Spin & Play',c:'#FF6B6B',min:2,max:4,unit:'⭐',skills:['color','count','abc','tamil'],
+ how:['சக்கரத்தைச் சுழற்று! நிறம், எண், எழுத்து, வடிவம், ஆட்டம், பரிசு – எது வந்தாலும் செய்! முதலில் இலக்கை அடைபவர் வெற்றி.','Spin the wheel! Colours, numbers, letters, shapes, moves, gifts – do whatever comes up! First to reach the goal wins.'],
+ opts:[{k:'goal',l:['வெற்றிக்கு எத்தனை ⭐?','Stars needed to win'],c:[['10','10 ⭐'],['15','15 ⭐'],['25','25 ⭐']],d:'15'}],
+ play(ctx){const P=ctx.players,goal=+ctx.opts.goal,seg=360/SL.length;let turn=0,rot=0,busy=false,last=null;
+  ctx.el.innerHTML=`<p class="note">${L('முதலில் '+goal+' ⭐ எடுப்பவர் வெற்றி!','First to '+goal+' ⭐ wins!')}</p><div class="wheelbox"><div class="pointer"></div><canvas class="wheel" width="800" height="800"></canvas><div class="hub">🎡</div></div><button class="btn spin"></button>`;
+  const cv=$('.wheel',ctx.el),btn=$('.spin',ctx.el),hub=$('.hub',ctx.el);drawWheel(cv);document.fonts&&document.fonts.ready.then(()=>ctx.alive&&drawWheel(cv));
+  const upd=()=>{const p=P[turn];ctx.strip(p.id);btn.textContent=p.av+' '+p.name+L(', சுழற்று!',', spin!');btn.style.background=p.color;btn.disabled=false;hub.textContent='🎡'};
+  upd();speak(P[0].name+', spin the wheel!');
+  btn.onclick=()=>{if(busy)return;busy=true;btn.disabled=true;let i;do{i=rnd(SL.length)}while(SL[i][0]===last);last=SL[i][0];
+    const target=(360-(i*seg+seg/2))%360,jit=(Math.random()-.5)*seg*.6;rot+=360*5+((target-(rot%360))+360)%360+jit;cv.style.transform='rotate('+rot+'deg)';
+    let t=0;const tk=()=>{if(t>4000)return;sfx.tick();const g=40+t*t/40000;t+=g;ctx.later(tk,g)};tk();
+    ctx.later(()=>{hub.textContent=SL[i][1];handle(i)},4300)};
+  function handle(i){const p=P[turn],k=SL[i][0],tag=`<span class="tag" style="background:${SLC[i]}">${SL[i][1]} ${tr(SL[i][2])}</span>`;
+    if(k==='action'){const a=pick(ACTIONS);openModal(`${tag}<div class="big">${a[0]}</div><div class="q">${a[1]}</div>${L('<p class="qt">'+a[2]+'</p>','')}<p class="qt"><b>${L('எல்லோரும் சேர்ந்து செய்யுங்கள்!','Everyone do it together!')}</b> ${L('எல்லோருக்கும் +1 ⭐','+1 ⭐ for everyone')}</p><button class="btn act" id="done">${L('செய்தோம்!','We did it!')} ✅</button>`);speak('Everyone! '+a[1]);
+      $('#done').onclick=()=>{P.forEach(q=>ctx.scores[q.id]++);sfx.yes();burst(60);next()}}
+    else if(k==='bonus'){const b=pick(BONUS);openModal(`${tag}<div class="big">${b[0]}</div><div class="q">${b[1]}</div>${L('<p class="qt">'+b[2]+'</p>','')}<div class="q">${'⭐'.repeat(b[3])}</div><p class="qt">${p.av} ${L(esc(p.name)+'க்கு +'+b[3]+'!','+'+b[3]+' for '+esc(p.name)+'!')}</p><button class="btn act" id="done">${L('ஹே!','Yay!')} 🎉</button>`);
+      speak(b[1]+' '+b[3]+' stars for '+p.name+'!');sfx.yes();burst(80);$('#done').onclick=()=>{ctx.scores[p.id]+=b[3];next()}}
+    else askQ(genQ(k),{who:p,tag,onResult:(ok,first)=>{ctx.record(p.id,k,ok);if(ok)ctx.scores[p.id]+=first?2:1;ctx.strip(p.id)},onNext:next});
+  }
+  function next(){closeModal();busy=false;if(P.some(q=>ctx.scores[q.id]>=goal))return ctx.end();turn=(turn+1)%P.length;upd();speak(P[turn].name+', your turn!')}
+ }},
+
+{id:'memory',e:'🃏',ta:'ஜோடி கண்டுபிடி',en:'Memory Match',c:'#8E7CFF',min:1,max:4,unit:'🃏',skills:['memory'],
+ how:['இரண்டு அட்டைகளைத் திற. ஒரே படம் என்றால் உனக்குப் புள்ளி, மீண்டும் உன் முறை! இல்லையென்றால் அடுத்தவர் முறை.','Open two cards. If they match, you score and go again! If not, it’s the next player’s turn.'],
+ opts:[{k:'size',l:['எத்தனை ஜோடி?','How many pairs?'],c:[['6',['6 (எளிது)','6 (easy)']],['8','8'],['10',['10 (கடினம்)','10 (hard)']]],d:'6'},{k:'theme',l:['படங்கள்','Pictures'],c:[['animals',['🐶 விலங்கு','🐶 Animals']],['fruits',['🍎 பழம்','🍎 Fruits']],['vehicles',['🚗 வண்டி','🚗 Vehicles']],['mix',['🌈 கலவை','🌈 Mix']]],d:'animals'}],
+ play(ctx){const P=ctx.players,n=+ctx.opts.size;
+  const SETS={animals:['🐶','🐱','🐮','🐷','🐸','🐵','🦁','🐯','🐼','🐰','🦊','🐻'],fruits:['🍎','🍌','🍇','🍓','🍊','🍉','🍍','🥭','🍒','🥝','🍑','🍐'],vehicles:['🚗','🚌','🚲','🚂','✈️','🚀','🚢','🚁','🚜','🚒','🛵','🚑']};
+  const pool=ctx.opts.theme==='mix'?[...SETS.animals,...SETS.fruits,...SETS.vehicles]:SETS[ctx.opts.theme];
+  const chosen=shuffle(pool).slice(0,n),cards=shuffle([...chosen,...chosen]).map(e=>({e,open:false,done:false}));
+  const cols=n===10?5:4;let turn=0,first=null,lock=false,left=n;
+  ctx.el.innerHTML=`<p class="note" id="mn"></p><div class="mgrid" id="mg" style="grid-template-columns:repeat(${cols},1fr)">${cards.map((c,i)=>`<button class="mcard" data-i="${i}" aria-label="card"><div class="in"><div class="f">?</div><div class="b">${c.e}</div></div></button>`).join('')}</div>`;
+  const els=$$('.mcard',ctx.el),mg=$('#mg');
+  const upd=(msg)=>{const p=P[turn];ctx.strip(p.id);mg.style.setProperty('--pc',p.color);$('#mn').textContent=msg||(p.av+' '+p.name+L(', 2 அட்டைகளைத் திற!',', open 2 cards!'))};
+  upd();speak(P[0].name+', find a pair!');
+  els.forEach((el,i)=>el.onclick=()=>{const c=cards[i];if(lock||c.open||c.done)return;c.open=true;el.classList.add('open');sfx.tap();
+    if(first===null){first=i;return}
+    const j=first;first=null;lock=true;const p=P[turn];
+    if(cards[j].e===c.e){ctx.later(()=>{c.done=cards[j].done=true;els[i].classList.add('done');els[j].classList.add('done');ctx.scores[p.id]++;ctx.record(p.id,'memory',true);sfx.yes();burst(30);left--;lock=false;
+        if(!left){upd(L('எல்லா ஜோடிகளும் கிடைத்தன! 🎉','All pairs found! 🎉'));ctx.later(ctx.end,1100)}else{upd(L('சூப்பர்! 🎉 மீண்டும் '+p.name+'-ன் முறை!','Super! 🎉 '+p.name+' goes again!'));speak('Super! Go again!')}},450)}
+    else{ctx.record(p.id,'memory',false);ctx.later(()=>{c.open=cards[j].open=false;els[i].classList.remove('open');els[j].classList.remove('open');lock=false;
+        if(P.length>1){turn=(turn+1)%P.length;upd();speak(P[turn].name+', your turn!')}else upd()},1100)}
+  });
+ }},
+
+{id:'race',e:'⚡',ta:'யார் முதலில்?',en:'Tap Race',c:'#FFB238',min:2,max:2,unit:'⚡',skills:['speed','color','count','abc','shape'],
+ how:['போனை நடுவில் வைத்து எதிரெதிரே உட்காருங்கள். கேள்வி வந்தவுடன் சரியானதை முதலில் தொடுபவருக்குப் புள்ளி! தவறாகத் தொட்டால் 1 வினாடி உறைந்துவிடுவாய் 🥶','Put the phone between you and sit face to face. When the question appears, the first to tap the right answer scores! Tap a wrong one and you freeze for 1 second 🥶'],
+ opts:[{k:'rounds',l:['எத்தனை சுற்று?','How many rounds?'],c:[['7','7'],['10','10'],['15','15']],d:'10'},{k:'help',l:['உதவி: 2வது வீரர் 1.5 வினாடி கழித்துதான் தொட முடியும்','Helper: player 2 can tap only after 1.5 seconds'],c:[['no',['இல்லை','No']],['yes',['ஆம் (குழந்தைக்கு உதவி)','Yes (helps the child)']]],d:'no'}],
+ play(ctx){const [A,B]=ctx.players,R=+ctx.opts.rounds,help=ctx.opts.help==='yes';let round=0,state='idle',q=null,t0=0;const lock={A:0,B:0};
+  const half=(s,p,cls)=>`<div class="half ${cls}" id="h${s}" style="--pc:${p.color}"><div class="rhead"><span>${p.av} ${esc(p.name)}</span><b id="rs${s}">0</b></div><div class="rprompt" id="pr${s}"></div><div class="ropts" id="op${s}"></div></div>`;
+  ctx.el.innerHTML=`<div class="race">${half('B',B,'top')}<div class="rmid"><button class="btn" id="rx">✕ ${L('நிறுத்து','Stop')}</button><span id="rr"></span></div>${half('A',A,'bot')}</div>`;
+  $('#rx').onclick=ctx.quit;
+  function raceQ(){const t=pick(['color','count','case','shape','find']);
+    if(t==='color'){const o=pick(COLOR_OBJ),ans=VIVID[o[1]]||COLORS[o[1]],others=shuffle(VIVID.filter(c=>c!==ans)).slice(0,3);return{cat:'color',prompt:o[0],say:'What colour is it?',opts:[ans,...others].map(c=>({cls:'dot',style:'background:'+c.c,ok:c===ans}))}}
+    if(t==='count'){const n=1+rnd(S.settings.diff==='med'?9:6),e=pick(OBJ);return{cat:'count',prompt:Array(n).fill(e).join(''),say:'How many?',opts:numOpts(n,4,1,10).map(v=>({html:v,ok:v===n}))}}
+    if(t==='case'){const LT=pick(WORDS)[0],o=shuffle(WORDS.filter(w=>w[0]!==LT)).slice(0,3).map(w=>w[0]);return{cat:'abc',prompt:LT,say:'Find small '+LT,opts:[LT,...o].map(x=>({html:x.toLowerCase(),ok:x===LT}))}}
+    if(t==='shape'){const ks=shuffle(Object.keys(SHAPES)).slice(0,4),a=ks[0],c=shuffle(SFILL);return{cat:'shape',prompt:shapeSvg(a,'#D5DAEE'),say:'Find the '+SHAPES[a].en,opts:ks.map((k,i)=>({html:shapeSvg(k,c[i]),ok:k===a}))}}
+    const g=shuffle(pick(ODD)).slice(0,4),a=g[0];return{cat:'speed',prompt:a,say:'Find it!',opts:g.map(x=>({html:x,ok:x===a}))}}
+  function newRound(){round++;if(round>R)return ctx.end();$('#rr').textContent=L('சுற்று ','Round ')+round+' / '+R;state='wait';q=raceQ();
+    ['A','B'].forEach(s=>{$('#h'+s).classList.remove('win','frozen');$('#op'+s).innerHTML=''});
+    let c=3;const cd=()=>{if(c===0){go();return}['A','B'].forEach(s=>$('#pr'+s).innerHTML='<span class="cd">'+c+'</span>');tone(500,.08,'square',.08);c--;ctx.later(cd,550)};cd()}
+  function go(){state='go';t0=Date.now();tone(1000,.15,'square',.1);speak(q.say);
+    ['A','B'].forEach(s=>{$('#pr'+s).innerHTML=q.prompt;const op=$('#op'+s);const ord=shuffle(q.opts.map((o,i)=>i));
+      op.innerHTML=ord.map(i=>`<button class="btn opt ${q.opts[i].cls||''}" data-i="${i}" style="${q.opts[i].style||''}">${q.opts[i].html??''}</button>`).join('');
+      $$('.opt',op).forEach(b=>b.addEventListener('pointerdown',e=>{e.preventDefault();tap(s,b)}))});
+    if(help){$('#hB').classList.add('waiting');ctx.later(()=>$('#hB').classList.remove('waiting'),1500)}}
+  function tap(s,b){if(state!=='go')return;const now=Date.now();if(lock[s]>now)return;if(help&&s==='B'&&now-t0<1500)return;
+    const p=s==='A'?A:B,o=q.opts[+b.dataset.i];
+    if(o.ok){state='done';ctx.scores[p.id]++;$('#rs'+s).textContent=ctx.scores[p.id];b.classList.add('yes');$('#h'+s).classList.add('win');sfx.yes();ctx.record(p.id,'speed',true);if(q.cat!=='speed')ctx.record(p.id,q.cat,true);
+      const other=s==='A'?'B':'A';$$('#op'+other+' .opt').forEach(x=>{if(q.opts[+x.dataset.i].ok)x.classList.add('yes')});ctx.later(newRound,1400)}
+    else{lock[s]=now+1000;b.classList.add('no');sfx.no();$('#h'+s).classList.add('frozen');ctx.record(p.id,'speed',false);ctx.later(()=>$('#h'+s).classList.remove('frozen'),1000)}}
+  newRound();
+ }},
+
+{id:'snakes',e:'🐍',ta:'பாம்பும் ஏணியும்',en:'Snakes & Ladders',c:'#7BD389',min:2,max:4,unit:'📍',skills:['count'],
+ how:['பகடையை உருட்டி, அத்தனை கட்டம் நகர்த்து. 🪜 ஏணியில் ஏறு, 🐍 பாம்பில் இறங்கு! ⭐ கட்டத்தில் கேள்விக்குச் சரியாகப் பதில் சொன்னால் +2 கட்டம். முதலில் 🏰 கோட்டையை அடைபவர் வெற்றி.','Roll the dice and move that many squares. Climb 🪜 ladders, slide down 🐍 snakes! Answer the question on a ⭐ square to jump 2 more. First to reach the 🏰 castle wins.'],
+ opts:[{k:'qs',l:['⭐ கேள்விக் கட்டங்கள்','⭐ Question squares'],c:[['yes',['ஆம்','Yes']],['no',['இல்லை','No']]],d:'yes'}],
+ play(ctx){const P=ctx.players,N=30,LAD={3:12,8:17,15:24,20:28},SNK={14:5,22:11,26:16,29:19},STAR=new Set(ctx.opts.qs==='yes'?[6,10,18,23]:[]);
+  const pos={};P.forEach(p=>{pos[p.id]=1;ctx.scores[p.id]=1});let turn=0,busy=false;
+  const order=[];for(let r=4;r>=0;r--)for(let c=0;c<6;c++)order.push(r*6+(r%2?6-c:c+1));
+  ctx.el.innerHTML=`<div class="sboard" id="sb"></div><p class="note" id="sn" style="margin-top:12px"></p><div class="dicebar"><div class="die" id="die"></div><button class="btn roll" id="roll"></button></div>`;
+  const PIPS={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
+  const die=n=>{$('#die').innerHTML=Array(9).fill(0).map((_,i)=>'<i class="'+(PIPS[n].includes(i)?'on':'')+'"></i>').join('')};
+  function draw(){$('#sb').innerHTML=order.map(n=>{const cls=n===N?'end':LAD[n]?'lad':SNK[n]?'snk':STAR.has(n)?'star':(n%2?'a':'b');
+    const mark=n===N?'🏰':LAD[n]?'🪜'+LAD[n]:SNK[n]?'🐍'+SNK[n]:STAR.has(n)?'⭐':'';
+    return `<div class="cell ${cls}"><i>${n}</i>${mark?'<em>'+mark+'</em>':''}${P.filter(p=>pos[p.id]===n).map(p=>`<span class="tok" style="background:${p.color}">${p.av}</span>`).join('')}</div>`}).join('');
+    P.forEach(p=>ctx.scores[p.id]=pos[p.id])}
+  const note=t=>$('#sn').textContent=t;
+  function upd(msg){const p=P[turn];ctx.strip(p.id);const b=$('#roll');b.textContent=p.av+' '+p.name+L(', உருட்டு! 🎲',', roll! 🎲');b.style.background=p.color;b.disabled=false;note(msg||'')}
+  draw();die(1);upd(L('பகடையை உருட்டு!','Roll the dice!'));speak(P[0].name+', roll the dice!');
+  $('#roll').onclick=()=>{if(busy)return;busy=true;$('#roll').disabled=true;$('#die').classList.add('roll');let k=0;
+    const anim=()=>{die(1+rnd(6));tone(300+rnd(300),.03,'square',.05);if(++k<10)return ctx.later(anim,70);const d=1+rnd(6);die(d);$('#die').classList.remove('roll');note(d+'! 🎲 '+L('எண்ணிக்கொண்டே நகர்த்து','Count as you move'));speak(String(d));ctx.later(()=>step(d,d,false),600)};anim()};
+  function step(k,d,bonus){const p=P[turn];if(k===0)return land(d,bonus);if(pos[p.id]>=N)return land(d,bonus);pos[p.id]++;sfx.step(pos[p.id]%12);draw();ctx.later(()=>step(k-1,d,bonus),330)}
+  function land(d,bonus){const p=P[turn],n=pos[p.id];
+    if(n>=N){draw();note('🏰 '+L(p.name+' கோட்டையை அடைந்தார்!',p.name+' reached the castle!')+' 🎉');sfx.win();burst(150);speak(p.name+' reached the castle!');return ctx.later(ctx.end,1800)}
+    if(LAD[n]){note(L('🪜 ஏணி! மேலே ஏறு!','🪜 Ladder! Climb up!'));sfx.yes();speak('Ladder! Climb up!');return ctx.later(()=>{pos[p.id]=LAD[n];draw();land(d,true)},900)}
+    if(SNK[n]){note(L('🐍 அச்சச்சோ! பாம்பு! கீழே இறங்கு','🐍 Oh no! A snake! Slide down'));sfx.no();speak('Oh no! A snake!');return ctx.later(()=>{pos[p.id]=SNK[n];draw();endTurn(d)},1000)}
+    if(STAR.has(n)&&!bonus){const cat=pick(['color','count','abc','tamil','shape','animal','math','oddone']);
+      return ctx.later(()=>askQ(genQ(cat),{who:p,tag:'<span class="tag" style="background:#FFE14D">'+L('⭐ கேள்விக் கட்டம் – சரி என்றால் +2','⭐ Question square – right answer = +2')+'</span>',onResult:ok=>{ctx.record(p.id,cat,ok);bonusOK=ok},onNext:()=>{if(bonusOK){note(L('⭐ சரியான பதில்! +2 கட்டம்','⭐ Correct! +2 squares'));step(2,d,true)}else endTurn(d)}}),500)}
+    endTurn(d)}
+  let bonusOK=false;
+  function endTurn(d){busy=false;const p=P[turn];ctx.record(p.id,'count',true);
+    if(d===6){upd(L('6 வந்தது! 🎉 '+p.name+' மீண்டும் உருட்டு!','You got 6! 🎉 '+p.name+', roll again!'));speak('Six! Roll again!');return}
+    turn=(turn+1)%P.length;upd();speak(P[turn].name+', your turn!')}
+ }},
+
+{id:'ttt',e:'❌',ta:'மூன்று வரிசை',en:'Tic-Tac-Toe',c:'#4D9DE0',min:2,max:2,unit:'🏆',skills:['logic'],
+ how:['மாறி மாறி உன் படத்தை வை. நேராகவோ, குறுக்காகவோ, சாய்வாகவோ மூன்று வரிசையாக வைத்தவர் சுற்றை வெல்வார்!','Take turns placing your picture. Three in a row – across, down or diagonal – wins the round!'],
+ opts:[{k:'rounds',l:['எத்தனை சுற்று?','How many rounds?'],c:[['3','3'],['5','5'],['7','7']],d:'3'}],
+ play(ctx){const P=ctx.players,R=+ctx.opts.rounds,LN=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];let round=0,b,turn,starter=0,over;
+  function newRound(){round++;if(round>R)return ctx.end();b=Array(9).fill(null);turn=starter;starter=1-starter;over=false;render();speak(P[turn].name+' starts!')}
+  function render(msg,win){const p=P[turn];ctx.strip(over?null:p.id);
+    ctx.el.innerHTML=`<p class="note">${L('சுற்று','Round')} ${round} / ${R} · ${msg||(p.av+' '+L(esc(p.name)+'-ன் முறை',esc(p.name)+'’s turn'))}</p><div class="ttt">${b.map((v,i)=>`<button class="tc ${win&&win.includes(i)?'w':''}" data-i="${i}" style="${v!==null?'background:color-mix(in srgb,'+P[v].color+' 35%,var(--card))':''}" aria-label="cell ${i+1}">${v!==null?P[v].av:''}</button>`).join('')}</div><div id="ta"></div>`;
+    $$('.tc',ctx.el).forEach(c=>c.onclick=()=>tap(+c.dataset.i))}
+  function tap(i){if(over||b[i]!==null)return;b[i]=turn;sfx.tap();const w=LN.find(l=>l.every(x=>b[x]===turn));
+    if(w){over=true;const p=P[turn],q=P[1-turn];ctx.scores[p.id]++;ctx.record(p.id,'logic',true);ctx.record(q.id,'logic',false);render('🎉 '+L(p.name+' இந்தச் சுற்றை வென்றார்!',p.name+' wins this round!'),w);sfx.yes();burst(70);speak(p.name+' wins this round!');nextBtn()}
+    else if(b.every(v=>v!==null)){over=true;render('🤝 '+L('சமநிலை!',"It's a draw!"));speak("It's a draw!");nextBtn()}
+    else{turn=1-turn;render()}}
+  function nextBtn(){$('#ta').innerHTML=`<button class="btn wide next" style="margin-top:16px">${round<R?L('அடுத்த சுற்று','Next round')+' ▶':L('முடிவைப் பார்','See results')+' 🏆'}</button>`;$('#ta button').onclick=newRound}
+  newRound();
+ }},
+
+{id:'balloon',e:'🎈',ta:'பலூன் உடை',en:'Balloon Pop',c:'#F28AC0',min:1,max:4,unit:'🎈',skills:['speed','color','count','abc'],
+ how:['ஒவ்வொருவருக்கும் தனி முறை. சொன்ன பலூன்களை மட்டும் தொட்டு உடை! நேரம் முடியும்போது அதிக பலூன் உடைத்தவர் வெற்றி.','Everyone gets their own turn. Pop only the balloons you’re told to! Most balloons when time runs out wins.'],
+ opts:[{k:'target',l:['எதை உடைக்க வேண்டும்?','What to pop?'],c:[['color',['🎨 நிறம்','🎨 Colour']],['number',['🔢 எண்','🔢 Number']],['letter',['🔤 எழுத்து','🔤 Letter']]],d:'color'},{k:'time',l:['நேரம்','Time'],c:[['20',['20 வினாடி','20 seconds']],['30',['30 வினாடி','30 seconds']],['45',['45 வினாடி','45 seconds']]],d:'30'}],
+ play(ctx){const P=ctx.players,T=+ctx.opts.time,type=ctx.opts.target,med=S.settings.diff==='med';let idx=0;
+  const LET=['A','B','C','D','E','M','S','T'];
+  let tgt;if(type==='color'){const c=pick(VIVID);tgt={val:c,label:`<span class="swatch" style="background:${c.c}"></span> ${L(c.ta+' பலூன்',c.en+' balloons')}`,say:'Pop the '+c.en+' balloons!',cat:'color'}}
+  else if(type==='number'){const n=1+rnd(9);tgt={val:n,label:L('எண் <b>'+n+'</b> பலூன்','number <b>'+n+'</b> balloons'),say:'Pop the number '+n+' balloons!',cat:'count'}}
+  else{const l=pick(LET);tgt={val:l,label:L('எழுத்து <b>'+l+'</b> பலூன்','letter <b>'+l+'</b> balloons'),say:'Pop the letter '+l+' balloons!',cat:'abc'}}
+  function intro(){const p=P[idx];ctx.strip(p.id);
+    ctx.el.innerHTML=`<div class="card chunk" style="border-color:${p.color}"><div class="big">${p.av}</div><div class="q">${esc(p.name)}, ${L('தயாரா?','ready?')}</div><p class="qt" style="font-size:1.3rem">${L(tgt.label+' மட்டும் உடை!','Pop only the '+tgt.label+'!')}</p><p class="qt">${T} ${L('வினாடி','seconds')} ⏱️</p><button class="btn wide" id="bgo" style="background:${p.color};color:#fff;font-size:1.5rem">${L('தொடங்கு!','Start!')} 🎈</button></div>`;
+    speak(p.name+'! '+tgt.say);$('#bgo').onclick=start}
+  function start(){const p=P[idx];let left=T,cnt=0,running=true;
+    ctx.el.innerHTML=`<div class="bhead"><span class="t">${tgt.label}</span><b>⏱️ <span id="bt">${T}</span></b><b>🎈 <span id="bc">0</span></b></div><div class="barea" id="ba"></div>`;
+    const area=$('#ba');speak(tgt.say);
+    const spawn=()=>{if(!running||!ctx.alive)return;const isT=Math.random()<.45,b=document.createElement('button');b.className='balloon';
+      let col=pick(VIVID),txt='';
+      if(type==='color'){col=isT?tgt.val:pick(VIVID.filter(c=>c!==tgt.val))}
+      else if(type==='number'){txt=isT?tgt.val:pick([1,2,3,4,5,6,7,8,9].filter(n=>n!==tgt.val))}
+      else{txt=isT?tgt.val:pick(LET.filter(l=>l!==tgt.val))}
+      b.style.background=col.c;b.textContent=txt;b.style.left=rnd(Math.max(10,area.clientWidth-70))+'px';
+      b.style.setProperty('--h',-(area.clientHeight+130)+'px');b.style.bottom='-90px';b.style.animationDuration=(med?3.6+Math.random()*1.4:5+Math.random()*2)+'s';
+      b.addEventListener('pointerdown',e=>{e.preventDefault();if(b.dataset.x)return;
+        if(isT){b.dataset.x=1;cnt++;ctx.scores[p.id]=cnt;$('#bc').textContent=cnt;b.classList.add('pop');sfx.pop();ctx.record(p.id,tgt.cat,true);setTimeout(()=>b.remove(),260)}
+        else{b.classList.add('wrong');sfx.no();ctx.record(p.id,tgt.cat,false)}});
+      b.addEventListener('animationend',e=>{if(e.animationName==='rise')b.remove()});
+      area.appendChild(b);ctx.later(spawn,med?380+rnd(250):520+rnd(300))};
+    spawn();
+    const timer=ctx.every(()=>{if(!running)return;left--;$('#bt').textContent=left;if(left<=3&&left>0)tone(700,.08,'square',.08);
+      if(left<=0){running=false;clearInterval(timer);ctx.record(p.id,'speed',cnt>=5);sfx.win();burst(60);
+        ctx.later(()=>{idx++;ctx.el.innerHTML=`<div class="card chunk"><div class="big">🎈</div><div class="q">${esc(p.name)}: ${cnt} ${L('பலூன்கள்!','balloons!')}</div><p class="qt">${L('அருமை!','Awesome!')} 👏</p><button class="btn wide next" id="bn">${idx<P.length?L('அடுத்து: ','Next: ')+P[idx].av+' '+esc(P[idx].name)+' ▶':L('முடிவைப் பார்','See results')+' 🏆'}</button></div>`;speak(cnt+' balloons! Great job!');$('#bn').onclick=()=>idx<P.length?intro():ctx.end()},600)}},1000)}
+  intro();
+ }},
+
+{id:'simon',e:'🐸',ta:'நினைவு ஒலி',en:'Copy the Sounds',c:'#1FB5A8',min:1,max:4,unit:'🧠',skills:['memory'],
+ how:['விலங்குகள் ஒளிர்ந்து பாடும் வரிசையைக் கவனமாகப் பார், அதே வரிசையில் நீயும் தொடு! ஒவ்வொரு முறையும் ஒன்று கூடும். யார் நீண்ட வரிசையை நினைவில் வைக்கிறார்?','Watch the animals light up and sing, then tap them in the same order! One more is added each time. Who can remember the longest?'],
+ opts:[{k:'lives',l:['உயிர்கள்','Lives'],c:[['1','❤️'],['2','❤️❤️'],['3','❤️❤️❤️']],d:'2'}],
+ play(ctx){const P=ctx.players,PADS=[{c:'#2BB24C',e:'🐸',f:330},{c:'#E53935',e:'🦀',f:262},{c:'#FFD600',e:'🐥',f:392},{c:'#1E63D6',e:'🐳',f:523}];let idx=0;
+  function intro(){const p=P[idx];ctx.strip(p.id);ctx.el.innerHTML=`<div class="card chunk" style="border-color:${p.color}"><div class="big">${p.av}</div><div class="q">${esc(p.name)}, ${L('தயாரா?','ready?')}</div><p class="qt">${L('பார்… கேள்… அதையே தொடு!','Watch… listen… copy!')} 👀👂👆</p><button class="btn wide" id="sgo" style="background:${p.color};color:#fff;font-size:1.5rem">${L('தொடங்கு!','Start!')}</button></div>`;speak(p.name+', watch and copy!');$('#sgo').onclick=start}
+  function start(){const p=P[idx];let seq=[],inp=0,acc=false,lives=+ctx.opts.lives;
+    ctx.el.innerHTML=`<p class="note" id="sn"></p><div class="simon">${PADS.map((d,i)=>`<button class="pad" data-i="${i}" style="--c:${d.c}">${d.e}</button>`).join('')}<div class="scenter"><span id="sl">0</span><small>${'❤️'.repeat(lives)}</small></div></div>`;
+    const pads=$$('.pad',ctx.el),note=t=>$('#sn').textContent=t,hearts=()=>$('.scenter small',ctx.el).textContent='❤️'.repeat(lives);
+    const flash=i=>{pads[i].classList.add('lit');tone(PADS[i].f,.3,'triangle',.2);ctx.later(()=>pads[i].classList.remove('lit'),300)};
+    const play=()=>{acc=false;note(L('கவனமாகப் பார்! 👀','Watch carefully! 👀'));let i=0;const sp=Math.max(320,700-seq.length*30);const g=()=>{if(i>=seq.length){acc=true;inp=0;note(L('இப்போ நீ! 👆','Your turn! 👆'));return}flash(seq[i]);i++;ctx.later(g,sp)};ctx.later(g,700)};
+    const add=()=>{seq.push(rnd(4));play()};
+    pads.forEach((b,i)=>b.addEventListener('pointerdown',e=>{e.preventDefault();if(!acc)return;flash(i);
+      if(i===seq[inp]){inp++;if(inp===seq.length){acc=false;ctx.scores[p.id]=seq.length;$('#sl').textContent=seq.length;ctx.record(p.id,'memory',true);note(L('சூப்பர்! 🎉','Super! 🎉'));ctx.later(()=>{sfx.yes();ctx.later(add,700)},300)}}
+      else{acc=false;sfx.no();ctx.record(p.id,'memory',false);lives--;hearts();
+        if(lives>0){note(L('அச்சச்சோ! மீண்டும் பார் ❤️','Oops! Watch again ❤️'));ctx.later(play,1100)}
+        else{note(L('முடிந்தது!','Finished!'));ctx.later(()=>{idx++;const s=ctx.scores[p.id];ctx.el.innerHTML=`<div class="card chunk"><div class="big">🧠</div><div class="q">${esc(p.name)}: ${s} ${L('படிகள்!','steps!')}</div><p class="qt">${s>=5?L('அபாரமான நினைவாற்றல்! 🌟','Amazing memory! 🌟'):L('நன்றாக முயற்சித்தாய்! 👏','Good try! 👏')}</p><button class="btn wide next" id="bn">${idx<P.length?L('அடுத்து: ','Next: ')+P[idx].av+' '+esc(P[idx].name)+' ▶':L('முடிவைப் பார்','See results')+' 🏆'}</button></div>`;speak(s+' steps! Well done!');$('#bn').onclick=()=>idx<P.length?intro():ctx.end()},900)}}}));
+    add()}
+  intro();
+ }},
+
+{id:'draw',e:'🖍️',ta:'வரைந்து கண்டுபிடி',en:'Draw & Guess',c:'#FF8C42',min:2,max:4,unit:'⭐',skills:['creative'],
+ how:['ஒருவர் ரகசியப் படத்தைப் பார்த்து வரைவார், மற்றவர்கள் கண்டுபிடிக்க வேண்டும்! சரியாகச் சொன்னவருக்கு +2, வரைந்தவருக்கு +1.','One player sees a secret picture and draws it, the others guess! Right guess +2, the artist +1.'],
+ opts:[{k:'rounds',l:['ஒவ்வொருவரும் எத்தனை முறை வரைய வேண்டும்?','How many drawings each?'],c:[['1','1'],['2','2'],['3','3']],d:'2'},{k:'time',l:['நேரம்','Time'],c:[['60',['60 வினாடி','60 seconds']],['90',['90 வினாடி','90 seconds']],['0',['நேரம் இல்லை','No timer']]],d:'60'}],
+ play(ctx){const P=ctx.players,total=P.length*+ctx.opts.rounds,T=+ctx.opts.time;let no=0;
+  const W=shuffle([['☀️','Sun','சூரியன்'],['🏠','House','வீடு'],['🐟','Fish','மீன்'],['🌳','Tree','மரம்'],['🚗','Car','கார்'],['🐱','Cat','பூனை'],['⚽','Ball','பந்து'],['⭐','Star','நட்சத்திரம்'],['🌸','Flower','பூ'],['🍎','Apple','ஆப்பிள்'],['🌙','Moon','நிலா'],['⛵','Boat','படகு'],['🌈','Rainbow','வானவில்'],['🦋','Butterfly','பட்டாம்பூச்சி'],['🐍','Snake','பாம்பு'],['🎈','Balloon','பலூன்'],['🍦','Ice cream','ஐஸ்கிரீம்'],['☂️','Umbrella','குடை'],['🐘','Elephant','யானை'],['✈️','Aeroplane','விமானம்'],['🍌','Banana','வாழைப்பழம்'],['🕷️','Spider','சிலந்தி'],['🎂','Cake','கேக்'],['🐌','Snail','நத்தை']]);
+  function nextTurn(){if(no>=total)return ctx.end();const d=P[no%P.length],w=W[no%W.length];no++;ctx.strip(d.id);
+    ctx.el.innerHTML=`<div class="card chunk" style="border-color:${d.color}"><div class="big">🙈</div><div class="q">${d.av} ${L(esc(d.name)+' வரைய வேண்டும்!',esc(d.name)+' will draw!')}</div><p class="qt">${L('மற்றவர்கள் கண்ணை மூடுங்கள்!','Everyone else, close your eyes!')}</p><button class="btn wide" id="peek1" style="background:${d.color};color:#fff">${L('ரகசியம் பார்','See the secret')} 👀</button></div>`;
+    speak(d.name+' will draw! Everyone else, close your eyes!');
+    $('#peek1').onclick=()=>{ctx.el.innerHTML=`<div class="card chunk"><div class="big" style="font-size:6rem">${w[0]}</div><div class="q">${L(w[2]+' · '+w[1],w[1]+' · '+w[2])}</div><p class="qt">${L('இதை வரை! பேசக்கூடாது','Draw this! No talking')} 🤐</p><button class="btn wide act" id="dgo">${L('வரையத் தொடங்கு','Start drawing')} ✏️</button></div>`;$('#dgo').onclick=()=>drawPhase(d,w)}}
+  function drawPhase(d,w){const others=P.filter(p=>p!==d);let left=T,done=false;
+    ctx.el.innerHTML=`<div class="dtop"><button class="btn tbtn" id="pk">👁️ ${L('ரகசியம்','Secret')}</button><b id="dt">${T?'⏱️ '+T:''}</b></div><canvas class="paper" id="cv"></canvas>
+    <div class="dtools">${['#23305E','#E53935','#1E63D6','#2BB24C','#FFD600','#FF8A00','#8E24AA','#8D5A2B'].map((c,i)=>`<button class="cbtn ${i?'':'on'}" data-c="${c}" style="background:${c}" aria-label="colour"></button>`).join('')}<button class="btn tbtn" data-c="#FFFFFF">🧽</button><button class="btn tbtn" id="thick">✏️ ${L('தடிமன்','Size')}</button><button class="btn tbtn" id="clr">🗑️</button></div>
+    <p class="note">${L('யார் சரியாகச் சொன்னார்கள்?','Who guessed it right?')}</p><div class="pick" style="justify-content:center">${others.map(p=>`<button class="pchip on" data-g="${p.id}" style="--pc:${p.color}"><span class="a">${p.av}</span>${esc(p.name)}</button>`).join('')}<button class="pchip on" data-g="" style="--pc:#9AA3C7"><span class="a">🤷</span>${L('யாரும் இல்லை','Nobody')}</button></div>`;
+    const cv=$('#cv'),g=cv.getContext('2d'),dpr=window.devicePixelRatio||1,wd=cv.clientWidth,ht=Math.round(Math.min(wd*.85,innerHeight*.48));
+    cv.style.height=ht+'px';cv.width=wd*dpr;cv.height=ht*dpr;g.scale(dpr,dpr);g.fillStyle='#fff';g.fillRect(0,0,wd,ht);g.lineCap=g.lineJoin='round';
+    let col='#23305E',size=6,drawing=false,lx,ly;
+    const ptr=e=>{const r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]};
+    cv.addEventListener('pointerdown',e=>{drawing=true;cv.setPointerCapture(e.pointerId);[lx,ly]=ptr(e);g.fillStyle=col;g.beginPath();g.arc(lx,ly,(col==='#FFFFFF'?size*3:size)/2,0,7);g.fill()});
+    cv.addEventListener('pointermove',e=>{if(!drawing)return;const [x,y]=ptr(e);g.strokeStyle=col;g.lineWidth=col==='#FFFFFF'?size*3:size;g.beginPath();g.moveTo(lx,ly);g.lineTo(x,y);g.stroke();lx=x;ly=y});
+    ['pointerup','pointercancel'].forEach(t=>cv.addEventListener(t,()=>drawing=false));
+    $$('[data-c]',ctx.el).forEach(b=>b.onclick=()=>{col=b.dataset.c;$$('[data-c]',ctx.el).forEach(x=>x.classList.toggle('on',x===b));sfx.tap()});
+    $('#thick').onclick=()=>{size=size===6?12:size===12?3:6;toast(L('தடிமன்: ','Size: ')+(size===3?L('மெல்லிய','thin'):size===6?L('நடுத்தர','medium'):L('தடிமனான','thick')))};
+    $('#clr').onclick=()=>{g.fillStyle='#fff';g.fillRect(0,0,wd,ht)};
+    $('#pk').onclick=()=>toast(w[0]+' '+L(w[2],w[1]));
+    if(T){const tm=ctx.every(()=>{if(done)return clearInterval(tm);left--;$('#dt').textContent='⏱️ '+left;if(left<=5&&left>0)tone(700,.08,'square',.08);if(left<=0){clearInterval(tm);$('#dt').textContent=L('⏰ நேரம் முடிந்தது!',"⏰ Time's up!");sfx.no()}},1000)}
+    $$('.pick [data-g]',ctx.el).forEach(b=>b.onclick=()=>{if(done)return;done=true;const gid=b.dataset.g,gp=P.find(p=>p.id===gid);
+      if(gp){ctx.scores[gp.id]+=2;ctx.scores[d.id]+=1;ctx.record(d.id,'creative',true);ctx.record(gp.id,'creative',true);sfx.yes();burst(80)}else{ctx.record(d.id,'creative',false)}
+      ctx.strip(d.id);
+      openModal(`<div class="big" style="font-size:6rem">${w[0]}</div><div class="q">${L(w[2]+' · '+w[1],w[1]+' · '+w[2])}</div><p class="qt">${gp?`${gp.av} ${esc(gp.name)} +2 ⭐ · ${d.av} ${esc(d.name)} +1 ⭐`:L('பரவாயில்லை! அடுத்த முறை 💪',"That's okay! Next time 💪")}</p><button class="btn act" id="dn">${L('அடுத்து','Next')} ▶</button>`);
+      speak(w[1]+'!');$('#dn').onclick=()=>{closeModal();nextTurn()}})}
+  nextTurn();
+ }}
+];
+
+/* ================= stats helpers ================= */
+function streak(s){const set=new Set(s.days||[]);const d=new Date();if(!set.has(dkey(d)))d.setDate(d.getDate()-1);let n=0;while(set.has(dkey(d))){n++;d.setDate(d.getDate()-1)}return n}
+const correct=s=>Object.values(s.skills||{}).reduce((a,v)=>a+v[0],0);
+const BADGES=[
+  {e:'🎈',n:['முதல் விளையாட்டு','First game'],f:s=>s.plays>=1},{e:'🥇',n:['முதல் வெற்றி','First win'],f:s=>s.wins>=1},{e:'🏅',n:['5 வெற்றிகள்','5 wins'],f:s=>s.wins>=5},{e:'🏆',n:['20 வெற்றிகள்','20 wins'],f:s=>s.wins>=20},
+  {e:'⭐',n:['50 நட்சத்திரம்','50 stars'],f:s=>s.stars>=50},{e:'🌟',n:['200 நட்சத்திரம்','200 stars'],f:s=>s.stars>=200},{e:'🧠',n:['50 சரியான பதில்','50 right answers'],f:s=>correct(s)>=50},{e:'🎓',n:['200 சரியான பதில்','200 right answers'],f:s=>correct(s)>=200},
+  {e:'🌈',n:['எல்லா விளையாட்டும்','Played every game'],f:s=>GAMES.every(g=>(s.games||{})[g.id])},{e:'🔥',n:['3 நாள் தொடர்','3-day streak'],f:s=>streak(s)>=3},{e:'🚀',n:['7 நாள் தொடர்','7-day streak'],f:s=>streak(s)>=7},{e:'👑',n:['50 விளையாட்டுகள்','50 games'],f:s=>s.plays>=50}];
+const earned=s=>BADGES.map((b,i)=>b.f(s)?i:-1).filter(i=>i>-1);
+
+/* ================= navigation ================= */
+let cleanups=[],currentTab='home';
+function runCleanups(){cleanups.forEach(f=>{try{f()}catch(e){}});cleanups=[];try{speechSynthesis.cancel()}catch(e){}closeModal()}
+function show(html,tabs){runCleanups();app.innerHTML=html;app.classList.toggle('nogap',!tabs);$('#tabs').classList.toggle('hidden',!tabs);window.scrollTo(0,0)}
+$$('#tabs button').forEach(b=>b.onclick=()=>{sfx.tap();go(b.dataset.t)});
+const TL={home:['விளையாட்டு','Games'],progress:['முன்னேற்றம்','Progress'],players:['வீரர்கள்','Players'],prefs:['அமைப்பு','Settings']};
+function go(t){currentTab=t;$$('#tabs button').forEach(b=>$('b',b).textContent=tr(TL[b.dataset.t]));$$('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));({home:homeView,progress:progressView,players:playersView,prefs:prefsView})[t]()}
+const pById=id=>S.players.find(p=>p.id===id);
+
+/* ---------- home ---------- */
+function homeView(){
+  const kid=S.players[0],tip=pick(GAMES);
+  show(`<div class="hello"><div><h1>${L('சுழற்று,<br>விளையாடு!','Spin &amp;<br>Play!')} 🎡</h1><p class="soft">${L('வணக்கம் '+esc(kid.name)+'! இன்று என்ன விளையாடலாம்?','Hi '+esc(kid.name)+'! What shall we play today?')} 👋</p></div><button class="btn langb" id="lang" aria-label="Language">🌐 ${L('English','தமிழ்')}</button></div>
+  <div class="pstrip">${S.players.map(p=>{const s=st(p.id),k=streak(s);return `<div class="pmini" style="--pc:${p.color}"><span class="a">${p.av}</span><div>${esc(p.name)}<small>${s.stars} ⭐${k?' · '+k+' 🔥':''}</small></div></div>`}).join('')}</div>
+  <button class="daily chunk wide" id="tip" style="text-align:left"><span class="de">${tip.e}</span><div><b>${L('இன்றைய பரிந்துரை: ',"Today’s pick: ")}${gn(tip)}</b><p class="soft">${gsub(tip)} · ${L('இப்போ விளையாடலாமா?','Play now?')}</p></div></button>
+  <h3>${L('விளையாட்டுகள்','Games')} <small>(${GAMES.length})</small></h3>
+  <div class="ggrid">${GAMES.map(g=>`<button class="gcard chunk" data-g="${g.id}" style="--gc:${g.c}"><span class="ge">${g.e}</span><b>${gn(g)}</b><span class="en">${gsub(g)}</span><span class="meta">👥 ${g.min===g.max?g.min:g.min+'–'+g.max} · ${g.skills.slice(0,3).map(k=>SKILL[k][0]).join(' ')}</span></button>`).join('')}</div>`,true);
+  $$('.gcard').forEach(b=>b.onclick=()=>{sfx.tap();openSetup(b.dataset.g)});
+  $('#tip').onclick=()=>openSetup(tip.id);
+  $('#lang').onclick=()=>{S.settings.lang=S.settings.lang==='en'?'ta':'en';save();applyTheme();sfx.tap();go('home')};
+}
+
+/* ---------- game setup ---------- */
+function openSetup(gid){
+  const g=GAMES.find(x=>x.id===gid);
+  let sel=(S.settings.lastSel[gid]||[]).filter(pById).slice(0,g.max);
+  if(sel.length<g.min)sel=S.players.slice(0,Math.min(g.max,Math.max(g.min,2))).map(p=>p.id);
+  const opts=Object.assign({},...g.opts.map(o=>({[o.k]:o.d})),S.settings.lastOpts[gid]||{});
+  show(`<div class="top"><button class="btn back" id="bk" aria-label="Back">←</button><h2>${gn(g)}</h2></div>
+  <div class="hero chunk" style="--gc:${g.c}"><span class="he">${g.e}</span><div><b>${gsub(g)}</b><p>${tr(g.how)}</p></div></div>
+  <h3>${L('யார் விளையாடுகிறார்கள்?','Who’s playing?')} <small>(${g.min===g.max?g.min:g.min+'–'+g.max} ${L('பேர் · தொடும் வரிசைப்படி முறை','players · turns follow tap order')})</small></h3><div class="pick" id="pk"></div>
+  ${g.opts.map(o=>`<div class="optrow"><label>${tr(o.l)}</label><div class="seg" data-k="${o.k}">${o.c.map(c=>`<button class="btn" data-v="${c[0]}">${tr(c[1])}</button>`).join('')}</div></div>`).join('')}
+  <p class="warn" id="warn"></p><button class="btn wide primary go" id="gogo" style="background:${g.c}">${L('தொடங்கு!','Let’s go!')} 🚀</button>`,false);
+  const renderPick=()=>{$('#pk').innerHTML=S.players.map(p=>{const i=sel.indexOf(p.id);return `<button class="pchip ${i>-1?'on':''}" data-p="${p.id}" style="--pc:${p.color}"><span class="a">${p.av}</span>${esc(p.name)}${i>-1?`<span class="n">${i+1}</span>`:''}</button>`}).join('');
+    $$('#pk .pchip').forEach(b=>b.onclick=()=>{const id=b.dataset.p,i=sel.indexOf(id);sfx.tap();if(i>-1)sel.splice(i,1);else if(sel.length<g.max)sel.push(id);else{toast(L('அதிகபட்சம் '+g.max+' பேர்','Maximum '+g.max+' players'));return}renderPick();check()})};
+  const check=()=>{const ok=sel.length>=g.min;$('#gogo').disabled=!ok;$('#warn').textContent=ok?'':L('குறைந்தது '+g.min+' பேரைத் தேர்ந்தெடு','Choose at least '+g.min+' players');return ok};
+  $$('.seg').forEach(sg=>{const k=sg.dataset.k;const r=()=>$$('button',sg).forEach(b=>b.classList.toggle('on',b.dataset.v===opts[k]));r();$$('button',sg).forEach(b=>b.onclick=()=>{opts[k]=b.dataset.v;sfx.tap();r()})});
+  renderPick();check();
+  $('#bk').onclick=()=>go('home');
+  $('#gogo').onclick=()=>{if(!check())return;S.settings.lastSel[gid]=sel.slice();S.settings.lastOpts[gid]=Object.assign({},opts);save();startGame(g,sel.slice(),Object.assign({},opts))};
+}
+
+/* ---------- runner ---------- */
+function startGame(g,sel,opts){
+  const P=sel.map(pById);
+  show(`<div class="top"><button class="btn back" id="qb" aria-label="Stop">←</button><h2>${g.e} ${gn(g)}</h2></div><div class="strip" id="strip"></div><div id="gbody"></div>`,false);
+  const ctx={players:P,opts,scores:{},alive:true,el:$('#gbody')};P.forEach(p=>ctx.scores[p.id]=0);
+  cleanups.push(()=>ctx.alive=false);
+  ctx.later=(f,ms)=>{const t=setTimeout(()=>{if(ctx.alive)f()},ms);cleanups.push(()=>clearTimeout(t));return t};
+  ctx.every=(f,ms)=>{const t=setInterval(()=>{if(ctx.alive)f()},ms);cleanups.push(()=>clearInterval(t));return t};
+  ctx.strip=a=>{$('#strip').innerHTML=P.map(p=>`<div class="sp ${p.id===a?'on':''}" style="--pc:${p.color}"><span>${p.av}</span><b>${esc(p.name)}</b><em>${ctx.scores[p.id]} ${g.unit}</em></div>`).join('')};
+  ctx.record=(pid,k,ok)=>{const s=st(pid).skills,v=s[k]||(s[k]=[0,0]);if(ok)v[0]++;v[1]++};
+  ctx.end=()=>{if(!ctx.alive)return;ctx.alive=false;finishGame(g,P,sel,opts,ctx.scores)};
+  ctx.quit=()=>askConfirm(L('விளையாட்டை நிறுத்தவா?','Stop the game?'),L('இந்த ஆட்டத்தின் வெற்றி கணக்கில் சேராது.','This game won’t be counted.'),L('நிறுத்து','Stop'),()=>{save();openSetup(g.id)});
+  $('#qb').onclick=ctx.quit;ctx.strip(P[0].id);g.play(ctx);
+}
+function finishGame(g,P,sel,opts,scores){
+  const ids=P.map(p=>p.id),max=Math.max(...ids.map(i=>scores[i]));let winners=ids.filter(i=>scores[i]===max);
+  const solo=ids.length===1,allTie=!solo&&winners.length===ids.length;const gained={},newB={};
+  ids.forEach(i=>{const s=st(i),before=earned(s);s.plays++;s.games[g.id]=(s.games[g.id]||0)+1;const d=dkey(new Date());if(!s.days.includes(d)){s.days.push(d);if(s.days.length>90)s.days.shift()}
+    let add=1;if(solo)add=1+Math.min(3,Math.floor(scores[i]/4));else if(winners.includes(i)&&!allTie){add=winners.length===1?3:2;if(winners.length===1)s.wins++}else if(allTie)add=2;
+    s.stars+=add;gained[i]=add;newB[i]=earned(s).filter(b=>!before.includes(b))});
+  S.history.unshift({t:Date.now(),g:g.id,r:ids.map(i=>[i,scores[i]]),w:!solo&&winners.length===1?winners[0]:null});S.history=S.history.slice(0,40);save();
+  const W=!solo&&winners.length===1?pById(winners[0]):null,sorted=P.slice().sort((a,b)=>scores[b.id]-scores[a.id]);
+  const nb=ids.flatMap(i=>newB[i].map(n=>{const b=BADGES[n];return `<div>${pById(i).av} ${esc(pById(i).name)}: ${b.e} ${tr(b.n)}</div>`}));
+  show(`<div class="card chunk"><div class="big">${solo?'🌟':W?'🏆':'🤝'}</div><div class="q">${solo?L('அருமை, ','Awesome, ')+esc(P[0].name)+'!':W?W.av+' '+L(esc(W.name)+' வெற்றி!',esc(W.name)+' wins!'):L('சமநிலை! எல்லோரும் சூப்பர்!',"It's a tie! Everyone's super!")}</div><p class="qt">${g.e} ${gn(g)}</p>
+  <div class="rank">${sorted.map((p,i)=>`<div class="rrow" style="--pc:${p.color}"><span class="m">${solo?'⭐':scores[p.id]===max?'🥇':i===1?'🥈':'🥉'}</span><span class="a">${p.av}</span><span class="nm">${esc(p.name)}</span><span><span class="s">${scores[p.id]} ${g.unit}</span><br><span class="st">+${gained[p.id]} ⭐</span></span></div>`).join('')}</div>
+  ${nb.length?`<div class="newb chunk"><b>🎖️ ${L('புதிய பதக்கம்!','New badge!')}</b>${nb.join('')}</div>`:''}
+  <div class="row2"><button class="btn" id="again" style="background:${g.c};color:#23305E">${L('மீண்டும்','Play again')} 🔁</button><button class="btn" id="others">${L('வேறு விளையாட்டு','Other games')} 🎮</button></div>
+  <button class="btn wide" id="prog" style="margin-top:12px">${L('முன்னேற்றம் பார்','See progress')} 📊</button></div>`,false);
+  sfx.win();burst(200);speak(solo?'Great job, '+P[0].name+'!':W?W.name+' wins! Great game, everyone!':"It's a tie! Everyone did great!");
+  $('#again').onclick=()=>startGame(g,sel,opts);$('#others').onclick=()=>go('home');$('#prog').onclick=()=>go('progress');
+}
+
+/* ---------- progress ---------- */
+let progSel=null;
+function progressView(){
+  if(!pById(progSel))progSel=S.players[0].id;
+  const ranked=S.players.slice().sort((a,b)=>st(b.id).stars-st(a.id).stars);
+  const p=pById(progSel),s=st(p.id);
+  const fav=Object.entries(s.games).sort((a,b)=>b[1]-a[1])[0];const fg=fav&&GAMES.find(g=>g.id===fav[0]);
+  const sk=Object.keys(SKILL).filter(k=>s.skills[k]&&s.skills[k][1]>0);
+  const fmt=t=>{const d=new Date(t),n=new Date();return (dkey(d)===dkey(n)?L('இன்று','Today'):d.getDate()+'/'+(d.getMonth()+1))+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
+  show(`<h1 style="font-size:1.9rem">${L('முன்னேற்றம்','Progress')} 📊</h1>
+  <h3>${L('தரவரிசை','Leaderboard')} 🏆</h3><div class="lb chunk">${ranked.map((q,i)=>{const t=st(q.id);return `<div class="lbrow" style="--pc:${q.color}"><span class="m">${['🥇','🥈','🥉'][i]||i+1}</span><span class="a">${q.av}</span><span class="nm">${esc(q.name)}</span><span>${t.stars} ⭐ · ${t.wins} 🏆</span></div>`}).join('')}</div>
+  <h3>${L('யாருடைய விவரம்?','Whose details?')}</h3><div class="ptabs">${S.players.map(q=>`<button class="pchip ${q.id===progSel?'on':''}" data-p="${q.id}" style="--pc:${q.color}"><span class="a">${q.av}</span>${esc(q.name)}</button>`).join('')}</div>
+  <div class="tiles"><div class="tile chunk"><b>${s.stars}</b><small>⭐ ${L('நட்சத்திரம்','Stars')}</small></div><div class="tile chunk"><b>${s.wins}</b><small>🏆 ${L('வெற்றி','Wins')}</small></div><div class="tile chunk"><b>${s.plays}</b><small>🎮 ${L('விளையாட்டு','Games')}</small></div><div class="tile chunk"><b>${streak(s)}</b><small>🔥 ${L('நாள் தொடர்','Day streak')}</small></div></div>
+  ${fg?`<p class="soft" style="margin-top:10px;font-weight:700">${L('பிடித்த விளையாட்டு: ','Favourite game: ')}${fg.e} ${gn(fg)} (${fav[1]} ${L('முறை','times')})</p>`:''}
+  <h3>${L('திறன்கள்','Skills')} 🌱 <small>(${L('சரியான பதில் %','% right answers')})</small></h3>
+  ${sk.length?`<div class="skills chunk">${sk.map(k=>{const [c,t]=s.skills[k],pc=Math.round(c/t*100),col=pc>=80?'var(--good)':pc>=50?'#FFB238':'#FF6B6B';return `<div class="sk"><span class="e">${SKILL[k][0]}</span><span class="l">${tr(SKILL[k][1])} <small>(${c}/${t})</small></span><b>${pc}%</b><div class="bar"><i style="width:${pc}%;background:${col}"></i></div></div>`}).join('')}</div>
+  <p class="soft" style="margin-top:8px;font-size:.95rem">${L('🟢 நன்றாகத் தெரியும் · 🟡 வளர்கிறது · 🔴 இன்னும் கொஞ்சம் பயிற்சி','🟢 Knows it well · 🟡 Growing · 🔴 Needs a bit more practice')}</p>`:`<div class="empty chunk">${L('இன்னும் தரவு இல்லை. ஒரு விளையாட்டு விளையாடினால் இங்கே திறன்கள் தெரியும்!','No data yet. Play a game and skills will show up here!')} 🎮</div>`}
+  <h3>${L('பதக்கங்கள்','Badges')} 🎖️ <small>(${earned(s).length}/${BADGES.length})</small></h3>
+  <div class="badges">${BADGES.map(b=>`<div class="badge chunk ${b.f(s)?'':'off'}"><span class="e">${b.e}</span>${tr(b.n)}</div>`).join('')}</div>
+  <h3>${L('சமீபத்திய விளையாட்டுகள்','Recent games')} 🕒</h3>
+  ${S.history.length?`<div class="hist chunk">${S.history.slice(0,12).map(h=>{const g=GAMES.find(x=>x.id===h.g)||{e:'🎮',ta:'?',en:'?'},w=h.w&&pById(h.w);return `<div class="hrow"><span class="e">${g.e}</span><div class="d"><b>${gn(g)}</b><small>${fmt(h.t)} · ${h.r.map(([i,sc])=>{const q=pById(i);return (q?q.av:'❔')+' '+sc}).join('  ')}</small></div><span>${w?'🏆'+w.av:h.r.length===1?'⭐':'🤝'}</span></div>`}).join('')}</div>`:`<div class="empty chunk">${L('இன்னும் விளையாட்டு இல்லை. தொடங்கலாமா?','No games yet. Shall we start?')} 🚀</div>`}`,true);
+  $$('.ptabs .pchip').forEach(b=>b.onclick=()=>{progSel=b.dataset.p;sfx.tap();progressView()});
+}
+
+/* ---------- players ---------- */
+function playersView(){
+  show(`<h1 style="font-size:1.9rem">${L('வீரர்கள்','Players')} 👨‍👩‍👦</h1><p class="soft" style="margin:4px 0 14px">${L('குடும்பத்தில் எல்லோரையும் சேர்த்துக்கொள்ளலாம் (6 பேர் வரை).','Add everyone in the family (up to 6).')}</p>
+  <div class="plist">${S.players.map(p=>{const s=st(p.id);return `<div class="prow chunk" style="--pc:${p.color}"><span class="a">${p.av}</span><div class="d"><b>${esc(p.name)}</b><small>${s.stars} ⭐ · ${s.wins} 🏆 · ${s.plays} 🎮</small></div><button class="btn" data-e="${p.id}" aria-label="Edit">✏️</button><button class="btn" data-d="${p.id}" aria-label="Delete">🗑️</button></div>`}).join('')}</div>
+  ${S.players.length<6?'<button class="btn wide primary" id="addp" style="margin-top:16px">+ '+L('புதிய வீரர்','New player')+'</button>':''}`,true);
+  $$('[data-e]').forEach(b=>b.onclick=()=>editPlayer(b.dataset.e));
+  $$('[data-d]').forEach(b=>b.onclick=()=>{if(S.players.length<=2)return toast(L('குறைந்தது 2 வீரர்கள் வேண்டும்','At least 2 players are needed'));const p=pById(b.dataset.d);
+    askConfirm(L(p.av+' '+esc(p.name)+' நீக்கவா?','Remove '+p.av+' '+esc(p.name)+'?'),L('அவருடைய நட்சத்திரங்களும் முன்னேற்றமும் நீக்கப்படும்.','Their stars and progress will be deleted.'),L('நீக்கு','Remove'),()=>{S.players=S.players.filter(x=>x!==p);delete S.stats[p.id];save();playersView()})});
+  const a=$('#addp');if(a)a.onclick=()=>editPlayer(null);
+}
+function editPlayer(id){
+  const isNew=!id,p=isNew?{id:'p'+Date.now().toString(36),name:'',av:pick(AVATARS),color:PCOLORS.find(c=>!S.players.some(x=>x.color===c))||pick(PCOLORS)}:Object.assign({},pById(id));
+  openModal(`<div class="q">${isNew?L('புதிய வீரர்','New player'):L('வீரரைத் திருத்து','Edit player')}</div><input class="field" id="pn" maxlength="14" placeholder="${L('பெயர்','Name')}" value="${esc(p.name)}" style="margin-top:10px">
+  <div class="avgrid">${AVATARS.map(a=>`<button class="avb ${a===p.av?'on':''}" data-a="${a}">${a}</button>`).join('')}</div>
+  <div class="colgrid">${PCOLORS.map(c=>`<button class="cbtn ${c===p.color?'on':''}" data-c="${c}" style="background:${c}" aria-label="colour"></button>`).join('')}</div>
+  <div class="row2"><button class="btn" id="pc">${L('ரத்து','Cancel')}</button><button class="btn primary" id="ps">${L('சேமி','Save')} ✅</button></div>`);
+  $$('.avb').forEach(b=>b.onclick=()=>{p.av=b.dataset.a;$$('.avb').forEach(x=>x.classList.toggle('on',x===b));sfx.tap()});
+  $$('#modal .cbtn').forEach(b=>b.onclick=()=>{p.color=b.dataset.c;$$('#modal .cbtn').forEach(x=>x.classList.toggle('on',x===b));sfx.tap()});
+  $('#pc').onclick=closeModal;
+  $('#ps').onclick=()=>{p.name=$('#pn').value.trim();if(!p.name){toast(L('பெயரை எழுதுங்கள்','Please type a name'));return}
+    if(isNew)S.players.push(p);else Object.assign(pById(id),p);save();closeModal();sfx.yes();playersView()};
+}
+
+/* ---------- settings ---------- */
+function prefsView(){
+  const seg=(k,choices)=>`<div class="seg" data-k="${k}">${choices.map(c=>`<button class="btn ${String(S.settings[k])===String(c[0])?'on':''}" data-v="${c[0]}">${tr(c[1])}</button>`).join('')}</div>`;
+  show(`<h1 style="font-size:1.9rem">${L('அமைப்பு','Settings')} ⚙️</h1>
+  <div class="set chunk" style="margin-top:14px">
+   <div class="optrow"><label>🌐 ${L('மொழி','Language')}</label>${seg('lang',[['ta','தமிழ்'],['en','English']])}</div>
+   <div class="optrow"><label>🔔 ${L('ஒலி விளைவுகள்','Sound effects')}</label>${seg('sound',[[true,['ஆன்','On']],[false,['ஆஃப்','Off']]])}</div>
+   <div class="optrow"><label>🗣️ ${L('கேள்விகளைச் சத்தமாக வாசி','Read questions aloud')}</label>${seg('voice',[[true,['ஆன்','On']],[false,['ஆஃப்','Off']]])}</div>
+   <div class="optrow"><label>🎯 ${L('கடினம்','Difficulty')}</label>${seg('diff',[['easy',['எளிது (UKG)','Easy (UKG)']],['med',['நடுத்தரம் (1st Std)','Medium (1st Std)']]])}</div>
+   <div class="optrow"><label>🌗 ${L('தோற்றம்','Theme')}</label>${seg('theme',[['auto',['தானியங்கி','Auto']],['light',['☀️ பகல்','☀️ Light']],['dark',['🌙 இரவு','🌙 Dark']]])}</div>
+  </div>
+  <h3>${L('பெற்றோருக்கு','For parents')} 💡</h3>
+  <div class="set chunk"><p>${L('முன்னேற்றம் தானாகச் சேமிக்கப்படும். “முன்னேற்றம்” பக்கத்தில் எந்தத் திறனில் உங்கள் குழந்தை வலுவாக இருக்கிறான், எதில் பயிற்சி தேவை என்று பார்க்கலாம்.','Progress is saved automatically. On the Progress page you can see which skills your child is strong in and which need more practice.')}</p><p class="soft">${L('“யார் முதலில்?” விளையாட்டில் “உதவி” முறையை இயக்கினால் பெரியவருக்குச் சிறு தாமதம் கிடைக்கும், போட்டி சமமாக இருக்கும்.','In “Tap Race”, turn on Helper mode to give the adult a small delay so the race stays fair.')}</p></div>
+  <button class="btn wide danger" id="reset" style="margin-top:18px">🗑️ ${L('எல்லா முன்னேற்றத்தையும் அழி','Clear all progress')}</button>`,true);
+  $$('.seg').forEach(sg=>$$('button',sg).forEach(b=>b.onclick=()=>{const k=sg.dataset.k;let v=b.dataset.v;if(v==='true')v=true;else if(v==='false')v=false;S.settings[k]=v;save();applyTheme();sfx.tap();go('prefs')}));
+  $('#reset').onclick=()=>askConfirm(L('எல்லாவற்றையும் அழிக்கவா?','Clear everything?'),L('நட்சத்திரங்கள், பதக்கங்கள், வரலாறு எல்லாம் நீக்கப்படும். வீரர்கள் அப்படியே இருப்பார்கள்.','Stars, badges and history will be deleted. Players will stay.'),L('அழி','Clear'),()=>{S.stats={};S.history=[];save();toast(L('அழிக்கப்பட்டது','Cleared'));go('prefs')});
+}
+
+go('home');
+</script>
+</body>
+</html>
